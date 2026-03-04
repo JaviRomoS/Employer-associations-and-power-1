@@ -1,0 +1,13 @@
+"0","proc <- proc %>% select(employer_association,
+                        
+                        union, union_density, fragmentation, collective_bargaining_coverage, confederation, 
+                        legal_mobilization, strikes, 
+                        
+                        economic_industry, company_size, temporary_workers, part_time_workers, managers_workforce,
+                        female_employees, exports_products, subcontracted_workers, subcontractor_company)
+"
+"1","[1m[33mError[39m in `select()`:[22m
+[33m![39m Can't select columns that don't exist.
+[31m✖[39m Column `subcontracted_workers` doesn't exist.
+[90mRun `]8;;x-r-run:rlang::last_trace()rlang::last_trace()]8;;` to see where the error occurred.[39m
+"

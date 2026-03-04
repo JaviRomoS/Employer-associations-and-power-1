@@ -1,5 +1,24 @@
-"0","identical(autoaplicado$id, sindtrab$id)
+"0","autoaplicado <- autoaplicado %>% arrange(id)
+autoaplicado <- autoaplicado %>% arrange(id)
+empleadores <- empleadores %>% arrange(id)
+empleadores <- empleadores %>% arrange(id)
+sindtrab <- sindtrab %>% arrange(id)
+empleadores <- empleadores %>% arrange(id)
+sindtrab <- sindtrab %>% arrange(id)
+# Comprobar que funciona
+identical(autoaplicado$id, empleadores$id) 
 "
+"1","[1]"
+"1"," TRUE"
+"1","
+"
+"0","# Comprobar que funciona"
+"0","identical(autoaplicado$id, empleadores$id) "
+"1","[1]"
+"1"," TRUE"
+"1","
+"
+"0","identical(autoaplicado$id, sindtrab$id)"
 "1","[1]"
 "1"," TRUE"
 "1","
