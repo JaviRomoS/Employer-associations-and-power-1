@@ -1,0 +1,3 @@
+"0","sindtrab <- readRDS(""C:/Users/javie/OneDrive/Sociologia/CONCLAT/employer associations and power/Employer-associations-and-power-1/input/syt.RDS"")"
+"0","autoaplicado <- readRDS(""C:/Users/javie/OneDrive/Sociologia/CONCLAT/employer associations and power/Employer-associations-and-power-1/input/aut.RDS"")"
+"0","empleadores <- readRDS(""C:/Users/javie/OneDrive/Sociologia/CONCLAT/employer associations and power/Employer-associations-and-power-1/input/emp.RDS"")"

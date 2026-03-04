@@ -1,0 +1,137 @@
+rm(list=ls())
+
+# ---------------------------PROCESAMIENTO --------------------------------
+
+# Cargar librerías --------------------------------------------------------
+
+library(pacman)
+
+pacman::p_load(tidyverse, sjmisc, dplyr, haven, summarytools, car, magrittr, writexl)
+
+# Abrir bases de datos ----------------------------------------------------
+
+sindtrab <- readRDS("input/syt.rds")
+autoaplicado <- readRDS("input/aut.rds")
+empleadores <- readRDS("input/emp.rds")
+
+# Procesar datos ----------------------------------------------------------
+
+## Ordenar ID -------------------------------------------------------------
+
+autoaplicado$id <- as.factor(autoaplicado$id)
+empleadores$id <- as.factor(empleadores$id)
+sindtrab$id <- as.factor(sindtrab$id)
+
+autoaplicado <- autoaplicado %>% arrange(id)
+empleadores <- empleadores %>% arrange(id)
+sindtrab <- sindtrab %>% arrange(id)
+
+identical(autoaplicado$id, empleadores$id) 
+identical(autoaplicado$id, sindtrab$id)
+
+# Seleccionar variables ---------------------------------------------------
+
+empleadores <- empleadores %>% rename_with(~ paste0(.x,"_a"), starts_with("l1"))
+sindtrab <- sindtrab %>% rename_with(~ paste0(.x,"_b"), starts_with("l1"))
+
+proc <- bind_cols(autoaplicado %>% dplyr::select(id, estrato, fe, 
+                                                 starts_with("b1_"),starts_with("k3_"), k2,
+                                                 actividad_economica, h5,starts_with("h4_")),
+                  empleadores %>% dplyr::select(j9, starts_with("f2_"), starts_with("l1")),
+                  sindtrab %>% dplyr::select(starts_with("k2_"), starts_with("k4_"),starts_with("l1")))
+
+# Crear y transformar variables -------------------------------------------
+
+proc <- proc %>%
+  mutate(across(starts_with("l1"), ~ case_when(.x == 2 ~ 0,
+                                       .x == 1 ~ 1,
+                                              TRUE ~ NA_real_))) %>% 
+  mutate(conflicto_legal_dummy = as.integer(rowSums(across(l1_01_b:l1_04_b, ~ .x == 1), na.rm = TRUE) > 0),
+         conflicto_nolegal_dummy = as.integer(rowSums(across(l1_05_b:l1_10_b, ~ .x == 1), na.rm = TRUE) > 0),
+         conflicto_legal = rowSums(across(l1_01_b:l1_04_b), na.rm = TRUE),
+         conflicto_nolegal = rowSums(across(l1_05_b:l1_10_b), na.rm = TRUE)) %>% 
+  mutate(sala_cuna = case_when(h5 == 1 ~ 1,
+                               h5 == 2 ~ 0,
+                               h5 %in% c(88, 96, 99) ~ NA_real_)) %>%
+  mutate(across(starts_with("f2_"), ~ case_when(.x == 3 ~ 0,
+                                                .x %in% c(1, 2) ~ 1,
+                                                .x %in% c(85, 88, 99) ~ NA_real_),
+                .names = "{.col}"),
+         fwa = rowSums(across(c(f2_01, f2_02, f2_03, f2_04, f2_77)), na.rm = TRUE)) %>% 
+  
+  rename(teletrabajo = f2_01,
+         horario_flexi = f2_02,
+         redist_jornada = f2_03,
+         permisos_especiales = f2_04) %>% 
+  
+  mutate(densidad_sindical = case_when(b1_3_7 == 0 ~ NA_real_,
+                                       TRUE ~ k3_3 / b1_3_7),
+         
+         densidad_sindical = case_when (densidad_sindical < 0 ~ NA_real_,
+                                        TRUE ~ densidad_sindical),
+         
+         pluralismo_sindical = case_when(k2 == 0 ~ NA_real_,
+                                         k2 == 1 ~ 0,
+                                         k2 == 2 ~ 1,
+                                         TRUE ~ NA_real_),
+         
+         sindicato = case_when(j9 == 1 ~ 1,
+                               j9 == 2 ~ 0,
+                               j9 %in% c(85,88,99) ~ NA_real_),
+         
+         densidad_sindical = case_when(sindicato == 0 ~ 0,
+                                       TRUE ~ densidad_sindical),
+         
+         presidenta_sindicato = case_when(k4_01_sind == 1 ~ 1,
+                                          
+                                          k4_01_sind == 2 ~ 0,
+                                          k4_01_sind %in% c(3,88,99) ~ NA_real_),
+         
+         femin_densidad_sindical = case_when(b1_1_7 == 0 | b1_2_7 == 0 ~ 0,
+                                             TRUE ~ (k3_1 / b1_1_7) / (k3_2 / b1_2_7)),
+         
+         femin_fuerza_laboral = case_when(b1_3_7 == 0 ~ NA_real_,
+                                          TRUE ~ b1_1_7 / b1_3_7),
+         
+         tamano_empresa = case_when(b1_3_7 <= 49 ~ 1,
+                                    b1_3_7 >= 50 & b1_3_7 <= 199 ~ 2,
+                                    b1_3_7 >= 200 ~ 3),
+         
+         actividad_economica = factor(actividad_economica, 
+                                      labels = c("Agricultura, ganadería, silvicultura y pesca",
+                                                 "Minería",
+                                                 "Industria manufacturera",
+                                                 "Suministro de electricidad, gas y agua; Gestión de desechos",
+                                                 "Construcción",
+                                                 "Comercio",
+                                                 "Transporte, almacenamiento, información y comunicaciones",
+                                                 "Alojamiento y servicio de comidas",
+                                                 "Actividades financieras y de seguros; Actividades inmobiliarias",
+                                                 "Actividades profesionales y técnicas; Servicios administrativos y de apoyo",
+                                                 "Enseñanza",
+                                                 "Salud y asistencia social",
+                                                 "Actividades artísticas y recreativas; Otros servicios"))) 
+  
+proc <- proc %>% mutate(across(starts_with("b1_"), as.numeric),
+                        prop_indef = case_when(b1_3_1 == 0 ~ 0,
+                                TRUE ~ (b1_3_1 / b1_3_7) * 100)) 
+  
+proc <- proc %>% dplyr::select(sala_cuna, fwa, teletrabajo,horario_flexi,redist_jornada,permisos_especiales,
+         densidad_sindical, pluralismo_sindical, sindicato, presidenta_sindicato,
+         femin_densidad_sindical, femin_fuerza_laboral, conflicto_legal, conflicto_nolegal,
+         conflicto_legal_dummy,conflicto_nolegal_dummy,
+         
+         tamano_empresa, actividad_economica, prop_indef, starts_with("h4"), b1_1_7)
+
+proc$femin_densidad_sindical[is.infinite(proc$femin_densidad_sindical)] <- NA #solucionar problemas
+
+view(dfSummary(proc, headings=FALSE, graph.col = FALSE))
+
+# Filtrar -----------------------------------------------------------------
+
+fildata <- proc %>% dplyr::filter(b1_1_7 >= 20)
+
+# Exportar datos ----------------------------------------------------------
+
+saveRDS(proc, file = "output/proc.rds")
+saveRDS(fildata, file = "output/datosfiltrados.rds")

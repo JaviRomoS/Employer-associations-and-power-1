@@ -1,0 +1,7 @@
+"0","proc <- proc %>% select(camara, gremio,"
+"0","                        "
+"0","                        union, union_afiliation, fragmentation, collective_bargaining_coverage, union_power,"
+"0","                        confederation, legal_mobilization, strikes, "
+"0","                        "
+"0","                        economic_industry, company_size, temporary_workers, part_time_workers, managers_workforce,"
+"0","                        female_employees, exports_products, subcontracted_workers, subcontractor_company)"

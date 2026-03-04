@@ -1,0 +1,876 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en"><head>
+
+<meta charset="utf-8">
+<meta name="generator" content="quarto-1.8.25">
+
+<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
+
+<meta name="author" content="Javiera Romo Sanchez">
+
+<title>procesamiento</title>
+<style>
+code{white-space: pre-wrap;}
+span.smallcaps{font-variant: small-caps;}
+div.columns{display: flex; gap: min(4vw, 1.5em);}
+div.column{flex: auto; overflow-x: auto;}
+div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+ul.task-list{list-style: none;}
+ul.task-list li input[type="checkbox"] {
+  width: 0.8em;
+  margin: 0 0.8em 0.2em -1em; /* quarto-specific, see https://github.com/quarto-dev/quarto-cli/issues/4556 */ 
+  vertical-align: middle;
+}
+/* CSS for syntax highlighting */
+html { -webkit-text-size-adjust: 100%; }
+pre > code.sourceCode { white-space: pre; position: relative; }
+pre > code.sourceCode > span { display: inline-block; line-height: 1.25; }
+pre > code.sourceCode > span:empty { height: 1.2em; }
+.sourceCode { overflow: visible; }
+code.sourceCode > span { color: inherit; text-decoration: inherit; }
+div.sourceCode { margin: 1em 0; }
+pre.sourceCode { margin: 0; }
+@media screen {
+div.sourceCode { overflow: auto; }
+}
+@media print {
+pre > code.sourceCode { white-space: pre-wrap; }
+pre > code.sourceCode > span { text-indent: -5em; padding-left: 5em; }
+}
+pre.numberSource code
+  { counter-reset: source-line 0; }
+pre.numberSource code > span
+  { position: relative; left: -4em; counter-increment: source-line; }
+pre.numberSource code > span > a:first-child::before
+  { content: counter(source-line);
+    position: relative; left: -1em; text-align: right; vertical-align: baseline;
+    border: none; display: inline-block;
+    -webkit-touch-callout: none; -webkit-user-select: none;
+    -khtml-user-select: none; -moz-user-select: none;
+    -ms-user-select: none; user-select: none;
+    padding: 0 4px; width: 4em;
+  }
+pre.numberSource { margin-left: 3em;  padding-left: 4px; }
+div.sourceCode
+  {   }
+@media screen {
+pre > code.sourceCode > span > a:first-child::before { text-decoration: underline; }
+}
+</style>
+
+
+<script src="procesamiento_files/libs/clipboard/clipboard.min.js"></script>
+<script src="procesamiento_files/libs/quarto-html/quarto.js" type="module"></script>
+<script src="procesamiento_files/libs/quarto-html/tabsets/tabsets.js" type="module"></script>
+<script src="procesamiento_files/libs/quarto-html/axe/axe-check.js" type="module"></script>
+<script src="procesamiento_files/libs/quarto-html/popper.min.js"></script>
+<script src="procesamiento_files/libs/quarto-html/tippy.umd.min.js"></script>
+<script src="procesamiento_files/libs/quarto-html/anchor.min.js"></script>
+<link href="procesamiento_files/libs/quarto-html/tippy.css" rel="stylesheet">
+<link href="procesamiento_files/libs/quarto-html/quarto-syntax-highlighting-7b89279ff1a6dce999919e0e67d4d9ec.css" rel="stylesheet" id="quarto-text-highlighting-styles">
+<script src="procesamiento_files/libs/bootstrap/bootstrap.min.js"></script>
+<link href="procesamiento_files/libs/bootstrap/bootstrap-icons.css" rel="stylesheet">
+<link href="procesamiento_files/libs/bootstrap/bootstrap-9e3ffae467580fdb927a41352e75a2e0.min.css" rel="stylesheet" append-hash="true" id="quarto-bootstrap" data-mode="light">
+
+
+</head>
+
+<body class="fullcontent quarto-light">
+
+<div id="quarto-content" class="page-columns page-rows-contents page-layout-article">
+
+<main class="content" id="quarto-document-content">
+
+<header id="title-block-header" class="quarto-title-block default">
+<div class="quarto-title">
+<h1 class="title">procesamiento</h1>
+</div>
+
+
+
+<div class="quarto-title-meta">
+
+    <div>
+    <div class="quarto-title-meta-heading">Author</div>
+    <div class="quarto-title-meta-contents">
+             <p>Javiera Romo Sanchez </p>
+          </div>
+  </div>
+    
+  
+    
+  </div>
+  
+
+
+</header>
+
+
+<p>Procesamiento</p>
+<section id="cargar-librerías" class="level1">
+<h1>1. Cargar librerías</h1>
+<div class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb1"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(pacman)</span>
+<span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a>pacman<span class="sc">::</span><span class="fu">p_load</span>(tidyverse, sjmisc, dplyr, haven, summarytools, car, magrittr)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</div>
+</section>
+<section id="abrir-bases-de-datos" class="level1">
+<h1>2. Abrir bases de datos</h1>
+<div class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb2"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a>sindtrab <span class="ot">&lt;-</span> <span class="fu">readRDS</span>(<span class="st">"C:/Users/javie/OneDrive/Sociologia/CONCLAT/employer associations and power/Employer-associations-and-power-1/input/syt.RDS"</span>)</span>
+<span id="cb2-2"><a href="#cb2-2" aria-hidden="true" tabindex="-1"></a>autoaplicado <span class="ot">&lt;-</span> <span class="fu">readRDS</span>(<span class="st">"C:/Users/javie/OneDrive/Sociologia/CONCLAT/employer associations and power/Employer-associations-and-power-1/input/aut.RDS"</span>)</span>
+<span id="cb2-3"><a href="#cb2-3" aria-hidden="true" tabindex="-1"></a>empleadores <span class="ot">&lt;-</span> <span class="fu">readRDS</span>(<span class="st">"C:/Users/javie/OneDrive/Sociologia/CONCLAT/employer associations and power/Employer-associations-and-power-1/input/emp.RDS"</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</div>
+</section>
+<section id="ordenar-id" class="level1">
+<h1>3. Ordenar id</h1>
+<div class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb3"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a>autoaplicado<span class="sc">$</span>id <span class="ot">&lt;-</span> <span class="fu">as.factor</span>(autoaplicado<span class="sc">$</span>id)</span>
+<span id="cb3-2"><a href="#cb3-2" aria-hidden="true" tabindex="-1"></a>empleadores<span class="sc">$</span>id <span class="ot">&lt;-</span> <span class="fu">as.factor</span>(empleadores<span class="sc">$</span>id)</span>
+<span id="cb3-3"><a href="#cb3-3" aria-hidden="true" tabindex="-1"></a>sindtrab<span class="sc">$</span>id <span class="ot">&lt;-</span> <span class="fu">as.factor</span>(sindtrab<span class="sc">$</span>id)</span>
+<span id="cb3-4"><a href="#cb3-4" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb3-5"><a href="#cb3-5" aria-hidden="true" tabindex="-1"></a>autoaplicado <span class="ot">&lt;-</span> autoaplicado <span class="sc">%&gt;%</span> <span class="fu">arrange</span>(id)</span>
+<span id="cb3-6"><a href="#cb3-6" aria-hidden="true" tabindex="-1"></a>empleadores <span class="ot">&lt;-</span> empleadores <span class="sc">%&gt;%</span> <span class="fu">arrange</span>(id)</span>
+<span id="cb3-7"><a href="#cb3-7" aria-hidden="true" tabindex="-1"></a>sindtrab <span class="ot">&lt;-</span> sindtrab <span class="sc">%&gt;%</span> <span class="fu">arrange</span>(id)</span>
+<span id="cb3-8"><a href="#cb3-8" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb3-9"><a href="#cb3-9" aria-hidden="true" tabindex="-1"></a><span class="co"># Comprobar que funciona</span></span>
+<span id="cb3-10"><a href="#cb3-10" aria-hidden="true" tabindex="-1"></a><span class="fu">identical</span>(autoaplicado<span class="sc">$</span>id, empleadores<span class="sc">$</span>id) </span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>[1] TRUE</code></pre>
+</div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb5"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb5-1"><a href="#cb5-1" aria-hidden="true" tabindex="-1"></a><span class="fu">identical</span>(autoaplicado<span class="sc">$</span>id, sindtrab<span class="sc">$</span>id)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>[1] TRUE</code></pre>
+</div>
+</div>
+</section>
+<section id="seleccionar-variables" class="level1">
+<h1>4. Seleccionar variables</h1>
+<div class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb7"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb7-1"><a href="#cb7-1" aria-hidden="true" tabindex="-1"></a>proc <span class="ot">&lt;-</span> <span class="fu">bind_cols</span>(autoaplicado <span class="sc">%&gt;%</span> dplyr<span class="sc">::</span><span class="fu">select</span>(k2,k3_3, <span class="fu">starts_with</span>(<span class="st">"m3"</span>),actividad_economica,<span class="fu">starts_with</span>(<span class="st">"a3"</span>),<span class="fu">starts_with</span>(<span class="st">"a4"</span>),a7,<span class="fu">starts_with</span>(<span class="st">"b1"</span>),</span>
+<span id="cb7-2"><a href="#cb7-2" aria-hidden="true" tabindex="-1"></a>                                                 <span class="fu">starts_with</span>(<span class="st">"c2"</span>),<span class="fu">starts_with</span>(<span class="st">"c3"</span>),c10,</span>
+<span id="cb7-3"><a href="#cb7-3" aria-hidden="true" tabindex="-1"></a>                                                 <span class="fu">starts_with</span>(<span class="st">"f1"</span>)),</span>
+<span id="cb7-4"><a href="#cb7-4" aria-hidden="true" tabindex="-1"></a>                  empleadores <span class="sc">%&gt;%</span> dplyr<span class="sc">::</span><span class="fu">select</span>(j4,<span class="fu">starts_with</span>(<span class="st">"j5"</span>),<span class="fu">starts_with</span>(<span class="st">"l1"</span>)),</span>
+<span id="cb7-5"><a href="#cb7-5" aria-hidden="true" tabindex="-1"></a>                  sindtrab <span class="sc">%&gt;%</span> dplyr<span class="sc">::</span><span class="fu">select</span>(sindicato, <span class="fu">starts_with</span>(<span class="st">"k21"</span>),<span class="fu">starts_with</span>(<span class="st">"k22"</span>), <span class="fu">starts_with</span>(<span class="st">"k23"</span>)))</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</div>
+</section>
+<section id="crear-y-transformar-variables" class="level1">
+<h1>5. Crear y transformar variables</h1>
+<div class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb8"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb8-1"><a href="#cb8-1" aria-hidden="true" tabindex="-1"></a>proc <span class="ot">&lt;-</span> proc <span class="sc">%&gt;%</span> <span class="fu">mutate</span>(</span>
+<span id="cb8-2"><a href="#cb8-2" aria-hidden="true" tabindex="-1"></a>  <span class="co">#Dependientes</span></span>
+<span id="cb8-3"><a href="#cb8-3" aria-hidden="true" tabindex="-1"></a>  <span class="at">camara =</span> <span class="fu">case_when</span>(</span>
+<span id="cb8-4"><a href="#cb8-4" aria-hidden="true" tabindex="-1"></a>    j4 <span class="sc">==</span> <span class="dv">1</span> <span class="sc">~</span> <span class="dv">1</span>,</span>
+<span id="cb8-5"><a href="#cb8-5" aria-hidden="true" tabindex="-1"></a>    j4 <span class="sc">==</span> <span class="dv">2</span> <span class="sc">~</span> <span class="dv">0</span>,</span>
+<span id="cb8-6"><a href="#cb8-6" aria-hidden="true" tabindex="-1"></a>    <span class="cn">TRUE</span> <span class="sc">~</span> <span class="cn">NA_real_</span>),</span>
+<span id="cb8-7"><a href="#cb8-7" aria-hidden="true" tabindex="-1"></a>  <span class="at">gremio =</span> <span class="fu">case_when</span>(</span>
+<span id="cb8-8"><a href="#cb8-8" aria-hidden="true" tabindex="-1"></a>    <span class="fu">if_any</span>(<span class="fu">c</span>(j5_88, j5_99), <span class="sc">~</span> .x <span class="sc">==</span> <span class="dv">1</span>) <span class="sc">~</span> <span class="dv">0</span>,</span>
+<span id="cb8-9"><a href="#cb8-9" aria-hidden="true" tabindex="-1"></a>    <span class="fu">if_any</span>(<span class="fu">c</span>(<span class="fu">starts_with</span>(<span class="st">"j5_"</span>), <span class="sc">-</span><span class="fu">any_of</span>(<span class="fu">c</span>(<span class="st">"j5_88"</span>, <span class="st">"j5_99"</span>))),<span class="sc">~</span> .x <span class="sc">%in%</span> <span class="fu">c</span>(<span class="st">"88"</span>, <span class="st">"96"</span>, <span class="st">"99"</span>)) <span class="sc">~</span> <span class="dv">0</span>, <span class="co"># No hay 88, 99 y 96 asi que esta linea da lo mismo</span></span>
+<span id="cb8-10"><a href="#cb8-10" aria-hidden="true" tabindex="-1"></a>    <span class="fu">if_all</span>(<span class="fu">c</span>(<span class="fu">starts_with</span>(<span class="st">"j5_"</span>), <span class="sc">-</span><span class="fu">any_of</span>(<span class="fu">c</span>(<span class="st">"j5_88"</span>, <span class="st">"j5_99"</span>))),<span class="sc">~</span> .x <span class="sc">==</span> <span class="dv">2</span>) <span class="sc">~</span> <span class="dv">0</span>,</span>
+<span id="cb8-11"><a href="#cb8-11" aria-hidden="true" tabindex="-1"></a>    <span class="fu">if_any</span>(<span class="fu">c</span>(<span class="fu">starts_with</span>(<span class="st">"j5_"</span>), <span class="sc">-</span><span class="fu">any_of</span>(<span class="fu">c</span>(<span class="st">"j5_88"</span>, <span class="st">"j5_99"</span>))),<span class="sc">~</span> .x <span class="sc">==</span> <span class="dv">1</span>) <span class="sc">~</span> <span class="dv">1</span>,</span>
+<span id="cb8-12"><a href="#cb8-12" aria-hidden="true" tabindex="-1"></a>    <span class="cn">TRUE</span> <span class="sc">~</span> <span class="cn">NA_real_</span>)) <span class="sc">%&gt;%</span> </span>
+<span id="cb8-13"><a href="#cb8-13" aria-hidden="true" tabindex="-1"></a>  </span>
+<span id="cb8-14"><a href="#cb8-14" aria-hidden="true" tabindex="-1"></a>                                                                              <span class="co"># Variables j5 tienen 3384 NA: lapply(proc %&gt;%                                                                                     select(starts_with("j5_")), table, useNA =                                                                                       "ifany")lapply(proc %&gt;%                                                                                                         select(starts_with("j5_")), table, useNA =                                                                                       "ifany")</span></span>
+<span id="cb8-15"><a href="#cb8-15" aria-hidden="true" tabindex="-1"></a>  </span>
+<span id="cb8-16"><a href="#cb8-16" aria-hidden="true" tabindex="-1"></a>  <span class="co">#independientes</span></span>
+<span id="cb8-17"><a href="#cb8-17" aria-hidden="true" tabindex="-1"></a>  </span>
+<span id="cb8-18"><a href="#cb8-18" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(<span class="at">union =</span> <span class="fu">case_when</span>(sindicato <span class="sc">==</span><span class="dv">1</span> <span class="sc">~</span> <span class="dv">1</span>,</span>
+<span id="cb8-19"><a href="#cb8-19" aria-hidden="true" tabindex="-1"></a>                           sindicato <span class="sc">==</span> <span class="dv">2</span> <span class="sc">~</span> <span class="dv">0</span>,</span>
+<span id="cb8-20"><a href="#cb8-20" aria-hidden="true" tabindex="-1"></a>                           <span class="cn">TRUE</span> <span class="sc">~</span> <span class="cn">NA</span>),</span>
+<span id="cb8-21"><a href="#cb8-21" aria-hidden="true" tabindex="-1"></a>         <span class="at">union_afiliation =</span> <span class="fu">case_when</span>(b1_3_7 <span class="sc">==</span> <span class="dv">0</span> <span class="sc">~</span> <span class="cn">NA_real_</span>,</span>
+<span id="cb8-22"><a href="#cb8-22" aria-hidden="true" tabindex="-1"></a>                                      <span class="cn">TRUE</span> <span class="sc">~</span> k3_3<span class="sc">/</span>b1_3_7),</span>
+<span id="cb8-23"><a href="#cb8-23" aria-hidden="true" tabindex="-1"></a>         <span class="at">union_afiliation =</span> <span class="fu">case_when</span>(union_afiliation <span class="sc">&lt;</span> <span class="dv">0</span> <span class="sc">~</span> <span class="cn">NA_real_</span>,</span>
+<span id="cb8-24"><a href="#cb8-24" aria-hidden="true" tabindex="-1"></a>                                      <span class="cn">TRUE</span> <span class="sc">~</span> union_afiliation),</span>
+<span id="cb8-25"><a href="#cb8-25" aria-hidden="true" tabindex="-1"></a>         <span class="at">fragmentation =</span> <span class="fu">case_when</span>(k2 <span class="sc">==</span> <span class="dv">0</span> <span class="sc">~</span> <span class="cn">NA_real_</span>,</span>
+<span id="cb8-26"><a href="#cb8-26" aria-hidden="true" tabindex="-1"></a>                                   <span class="cn">TRUE</span> <span class="sc">~</span> union_afiliation <span class="sc">/</span> k2),</span>
+<span id="cb8-27"><a href="#cb8-27" aria-hidden="true" tabindex="-1"></a>         <span class="fu">across</span>(<span class="fu">starts_with</span>(<span class="st">"m3_"</span>), <span class="sc">~</span> <span class="fu">case_when</span>(.x <span class="sc">==</span> <span class="dv">96</span> <span class="sc">~</span> <span class="cn">NA_real_</span>,</span>
+<span id="cb8-28"><a href="#cb8-28" aria-hidden="true" tabindex="-1"></a>                                               <span class="cn">TRUE</span> <span class="sc">~</span> .x)),</span>
+<span id="cb8-29"><a href="#cb8-29" aria-hidden="true" tabindex="-1"></a>         <span class="at">collective_bargaining_coverage =</span> m3_1_1 <span class="sc">+</span> m3_2_1 <span class="sc">+</span> m3_1_2 <span class="sc">+</span> m3_2_2,</span>
+<span id="cb8-30"><a href="#cb8-30" aria-hidden="true" tabindex="-1"></a>         <span class="at">union_power =</span> <span class="fu">case_when</span>(collective_bargaining_coverage <span class="sc">==</span> <span class="dv">0</span> <span class="sc">~</span> <span class="cn">NA_real_</span>,</span>
+<span id="cb8-31"><a href="#cb8-31" aria-hidden="true" tabindex="-1"></a>                                 <span class="cn">TRUE</span> <span class="sc">~</span> <span class="fu">as.numeric</span>(union_afiliation<span class="sc">/</span>collective_bargaining_coverage)),</span>
+<span id="cb8-32"><a href="#cb8-32" aria-hidden="true" tabindex="-1"></a>         <span class="at">confederation =</span> <span class="fu">case_when</span>(k21_22_23_sind <span class="sc">==</span> <span class="dv">2</span> <span class="sc">~</span> <span class="dv">0</span>,</span>
+<span id="cb8-33"><a href="#cb8-33" aria-hidden="true" tabindex="-1"></a>                                   k21_22_23_sind <span class="sc">==</span> <span class="dv">1</span> <span class="sc">~</span> <span class="dv">1</span>,</span>
+<span id="cb8-34"><a href="#cb8-34" aria-hidden="true" tabindex="-1"></a>                                   <span class="cn">TRUE</span> <span class="sc">~</span> <span class="cn">NA_real_</span>),</span>
+<span id="cb8-35"><a href="#cb8-35" aria-hidden="true" tabindex="-1"></a>         <span class="at">legal_mobilization =</span> <span class="fu">as.integer</span>(<span class="fu">rowSums</span>(<span class="fu">across</span>(l1_01<span class="sc">:</span>l1_04, <span class="sc">~</span> .x <span class="sc">==</span> <span class="dv">1</span>), <span class="at">na.rm =</span> <span class="cn">TRUE</span>) <span class="sc">&gt;</span> <span class="dv">0</span>),</span>
+<span id="cb8-36"><a href="#cb8-36" aria-hidden="true" tabindex="-1"></a>         <span class="at">strikes =</span> <span class="fu">as.integer</span>(<span class="fu">rowSums</span>(<span class="fu">across</span>(l1_05<span class="sc">:</span>l1_10, <span class="sc">~</span> .x <span class="sc">==</span> <span class="dv">1</span>), <span class="at">na.rm =</span> <span class="cn">TRUE</span>) <span class="sc">&gt;</span> <span class="dv">0</span>)) <span class="sc">%&gt;%</span> </span>
+<span id="cb8-37"><a href="#cb8-37" aria-hidden="true" tabindex="-1"></a>  </span>
+<span id="cb8-38"><a href="#cb8-38" aria-hidden="true" tabindex="-1"></a>  <span class="co">#Controles</span></span>
+<span id="cb8-39"><a href="#cb8-39" aria-hidden="true" tabindex="-1"></a>  </span>
+<span id="cb8-40"><a href="#cb8-40" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(<span class="at">economic_industry =</span> <span class="fu">factor</span>(actividad_economica, </span>
+<span id="cb8-41"><a href="#cb8-41" aria-hidden="true" tabindex="-1"></a>                                      <span class="at">labels =</span> <span class="fu">c</span>(<span class="st">"Agricultura, ganadería, silvicultura y pesca"</span>,</span>
+<span id="cb8-42"><a href="#cb8-42" aria-hidden="true" tabindex="-1"></a>                                                 <span class="st">"Minería"</span>,</span>
+<span id="cb8-43"><a href="#cb8-43" aria-hidden="true" tabindex="-1"></a>                                                 <span class="st">"Industria manufacturera"</span>,</span>
+<span id="cb8-44"><a href="#cb8-44" aria-hidden="true" tabindex="-1"></a>                                                 <span class="st">"Suministro de electricidad, gas y agua; Gestión de desechos"</span>,</span>
+<span id="cb8-45"><a href="#cb8-45" aria-hidden="true" tabindex="-1"></a>                                                 <span class="st">"Construcción"</span>,</span>
+<span id="cb8-46"><a href="#cb8-46" aria-hidden="true" tabindex="-1"></a>                                                 <span class="st">"Comercio"</span>,</span>
+<span id="cb8-47"><a href="#cb8-47" aria-hidden="true" tabindex="-1"></a>                                                 <span class="st">"Transporte, almacenamiento, información y comunicaciones"</span>,</span>
+<span id="cb8-48"><a href="#cb8-48" aria-hidden="true" tabindex="-1"></a>                                                 <span class="st">"Alojamiento y servicio de comidas"</span>,</span>
+<span id="cb8-49"><a href="#cb8-49" aria-hidden="true" tabindex="-1"></a>                                                 <span class="st">"Actividades financieras y de seguros; Actividades inmobiliarias"</span>,</span>
+<span id="cb8-50"><a href="#cb8-50" aria-hidden="true" tabindex="-1"></a>                                                 <span class="st">"Actividades profesionales y técnicas; Servicios administrativos y de apoyo"</span>,</span>
+<span id="cb8-51"><a href="#cb8-51" aria-hidden="true" tabindex="-1"></a>                                                 <span class="st">"Enseñanza"</span>,</span>
+<span id="cb8-52"><a href="#cb8-52" aria-hidden="true" tabindex="-1"></a>                                                 <span class="st">"Salud y asistencia social"</span>,</span>
+<span id="cb8-53"><a href="#cb8-53" aria-hidden="true" tabindex="-1"></a>                                                 <span class="st">"Actividades artísticas y recreativas; Otros servicios"</span>)),</span>
+<span id="cb8-54"><a href="#cb8-54" aria-hidden="true" tabindex="-1"></a>         <span class="at">company_size =</span> <span class="fu">case_when</span>(b1_3_7 <span class="sc">&lt;=</span> <span class="dv">49</span> <span class="sc">~</span> <span class="dv">1</span>,</span>
+<span id="cb8-55"><a href="#cb8-55" aria-hidden="true" tabindex="-1"></a>                                  b1_3_7 <span class="sc">&gt;=</span> <span class="dv">50</span> <span class="sc">&amp;</span> b1_3_7 <span class="sc">&lt;=</span> <span class="dv">199</span> <span class="sc">~</span> <span class="dv">2</span>,</span>
+<span id="cb8-56"><a href="#cb8-56" aria-hidden="true" tabindex="-1"></a>                                  b1_3_7 <span class="sc">&gt;=</span> <span class="dv">200</span> <span class="sc">~</span> <span class="dv">3</span>,</span>
+<span id="cb8-57"><a href="#cb8-57" aria-hidden="true" tabindex="-1"></a>                                  <span class="cn">TRUE</span> <span class="sc">~</span> <span class="cn">NA</span>),</span>
+<span id="cb8-58"><a href="#cb8-58" aria-hidden="true" tabindex="-1"></a>         <span class="at">temporary_workers =</span> <span class="fu">case_when</span>(b1_3_7 <span class="sc">==</span> <span class="dv">0</span> <span class="sc">~</span> <span class="cn">NA</span>,</span>
+<span id="cb8-59"><a href="#cb8-59" aria-hidden="true" tabindex="-1"></a>                                       <span class="cn">TRUE</span> <span class="sc">~</span> ((b1_3_2 <span class="sc">+</span> b1_3_3 <span class="sc">+</span> b1_3_4)<span class="sc">/</span>b1_3_7)),</span>
+<span id="cb8-60"><a href="#cb8-60" aria-hidden="true" tabindex="-1"></a>         <span class="at">part_time_workers =</span> <span class="fu">case_when</span>(b1_3_7 <span class="sc">==</span> <span class="dv">0</span> <span class="sc">~</span> <span class="cn">NA</span>,</span>
+<span id="cb8-61"><a href="#cb8-61" aria-hidden="true" tabindex="-1"></a>                                       <span class="cn">TRUE</span> <span class="sc">~</span> ((f1_3_3 <span class="sc">+</span> f1_3_4)<span class="sc">/</span>b1_3_7)),</span>
+<span id="cb8-62"><a href="#cb8-62" aria-hidden="true" tabindex="-1"></a>         <span class="at">managers_workforce =</span> <span class="fu">case_when</span>(b1_3_7 <span class="sc">==</span> <span class="dv">0</span> <span class="sc">~</span> <span class="cn">NA</span>,</span>
+<span id="cb8-63"><a href="#cb8-63" aria-hidden="true" tabindex="-1"></a>                                       <span class="cn">TRUE</span> <span class="sc">~</span> ((a4_3_1 <span class="sc">+</span> a4_3_2)<span class="sc">/</span>b1_3_7)),</span>
+<span id="cb8-64"><a href="#cb8-64" aria-hidden="true" tabindex="-1"></a>         <span class="at">female_employees =</span> <span class="fu">case_when</span>(b1_3_7 <span class="sc">==</span> <span class="dv">0</span> <span class="sc">~</span> <span class="cn">NA_real_</span>,</span>
+<span id="cb8-65"><a href="#cb8-65" aria-hidden="true" tabindex="-1"></a>                                          <span class="cn">TRUE</span> <span class="sc">~</span> b1_1_7 <span class="sc">/</span> b1_3_7),</span>
+<span id="cb8-66"><a href="#cb8-66" aria-hidden="true" tabindex="-1"></a>         <span class="at">exports_products =</span> <span class="fu">case_when</span>(a7 <span class="sc">==</span> <span class="dv">1</span> <span class="sc">~</span> <span class="dv">1</span>,</span>
+<span id="cb8-67"><a href="#cb8-67" aria-hidden="true" tabindex="-1"></a>                                      a7 <span class="sc">==</span> <span class="dv">2</span> <span class="sc">~</span> <span class="dv">0</span>,</span>
+<span id="cb8-68"><a href="#cb8-68" aria-hidden="true" tabindex="-1"></a>                                      <span class="cn">TRUE</span> <span class="sc">~</span> <span class="cn">NA</span>),</span>
+<span id="cb8-69"><a href="#cb8-69" aria-hidden="true" tabindex="-1"></a>         <span class="fu">across</span>(<span class="fu">c</span>(c2_3, c3_3), <span class="sc">~</span><span class="fu">case_when</span>(.x <span class="sc">==</span> <span class="sc">-</span><span class="dv">96</span> <span class="sc">~</span> <span class="cn">NA_real_</span>,</span>
+<span id="cb8-70"><a href="#cb8-70" aria-hidden="true" tabindex="-1"></a>                                          <span class="cn">TRUE</span> <span class="sc">~</span> .x)),</span>
+<span id="cb8-71"><a href="#cb8-71" aria-hidden="true" tabindex="-1"></a>         <span class="at">subcontracted_workers =</span> <span class="fu">case_when</span>(b1_3_7 <span class="sc">==</span> <span class="dv">0</span> <span class="sc">~</span> <span class="cn">NA_real_</span>,</span>
+<span id="cb8-72"><a href="#cb8-72" aria-hidden="true" tabindex="-1"></a>                                          <span class="cn">TRUE</span> <span class="sc">~</span> ((c2_3 <span class="sc">+</span> c3_3) <span class="sc">/</span> b1_3_7)),</span>
+<span id="cb8-73"><a href="#cb8-73" aria-hidden="true" tabindex="-1"></a>         <span class="at">subcontractor_company =</span> <span class="fu">case_when</span>(c10 <span class="sc">==</span><span class="dv">1</span> <span class="sc">~</span> <span class="dv">1</span>,</span>
+<span id="cb8-74"><a href="#cb8-74" aria-hidden="true" tabindex="-1"></a>                                           c10 <span class="sc">==</span> <span class="dv">2</span> <span class="sc">~</span> <span class="dv">0</span>,</span>
+<span id="cb8-75"><a href="#cb8-75" aria-hidden="true" tabindex="-1"></a>                                           <span class="cn">TRUE</span> <span class="sc">~</span> <span class="cn">NA</span>)</span>
+<span id="cb8-76"><a href="#cb8-76" aria-hidden="true" tabindex="-1"></a>         )</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</div>
+</section>
+<section id="revisar-variables-creadas" class="level1">
+<h1>6. Revisar variables creadas</h1>
+<div class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb9"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb9-1"><a href="#cb9-1" aria-hidden="true" tabindex="-1"></a><span class="do">## 6.1. Dependientes</span></span>
+<span id="cb9-2"><a href="#cb9-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb9-3"><a href="#cb9-3" aria-hidden="true" tabindex="-1"></a><span class="fu">frq</span>(proc<span class="sc">$</span>camara)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>x &lt;numeric&gt; 
+# total N=4496 valid N=4370 mean=0.25 sd=0.44
+
+Value |    N | Raw % | Valid % | Cum. %
+---------------------------------------
+    0 | 3258 | 72.46 |   74.55 |  74.55
+    1 | 1112 | 24.73 |   25.45 | 100.00
+ &lt;NA&gt; |  126 |  2.80 |    &lt;NA&gt; |   &lt;NA&gt;</code></pre>
+</div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb11"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb11-1"><a href="#cb11-1" aria-hidden="true" tabindex="-1"></a><span class="fu">frq</span>(proc<span class="sc">$</span>gremio)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>x &lt;numeric&gt; 
+# total N=4496 valid N=1112 mean=0.95 sd=0.21
+
+Value |    N | Raw % | Valid % | Cum. %
+---------------------------------------
+    0 |   51 |  1.13 |    4.59 |   4.59
+    1 | 1061 | 23.60 |   95.41 | 100.00
+ &lt;NA&gt; | 3384 | 75.27 |    &lt;NA&gt; |   &lt;NA&gt;</code></pre>
+</div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb13"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb13-1"><a href="#cb13-1" aria-hidden="true" tabindex="-1"></a><span class="do">## 6.2. Independientes</span></span>
+<span id="cb13-2"><a href="#cb13-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb13-3"><a href="#cb13-3" aria-hidden="true" tabindex="-1"></a><span class="fu">frq</span>(proc<span class="sc">$</span>union)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>x &lt;numeric&gt; 
+# total N=4496 valid N=4496 mean=0.21 sd=0.41
+
+Value |    N | Raw % | Valid % | Cum. %
+---------------------------------------
+    0 | 3561 | 79.20 |   79.20 |  79.20
+    1 |  935 | 20.80 |   20.80 | 100.00
+ &lt;NA&gt; |    0 |  0.00 |    &lt;NA&gt; |   &lt;NA&gt;</code></pre>
+</div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb15"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb15-1"><a href="#cb15-1" aria-hidden="true" tabindex="-1"></a><span class="fu">summary</span>(proc<span class="sc">$</span>union_afiliation)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>   Min. 1st Qu.  Median    Mean 3rd Qu.    Max.    NA's 
+ 0.0055  0.3220  0.5698  0.5495  0.7598  7.6000    3573 </code></pre>
+</div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb17"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb17-1"><a href="#cb17-1" aria-hidden="true" tabindex="-1"></a><span class="fu">summary</span>(proc<span class="sc">$</span>fragmentation)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>   Min. 1st Qu.  Median    Mean 3rd Qu.    Max.    NA's 
+ 0.0055  0.2284  0.3750  0.3995  0.4951  7.6000    3573 </code></pre>
+</div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb19"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb19-1"><a href="#cb19-1" aria-hidden="true" tabindex="-1"></a><span class="fu">frq</span>(proc<span class="sc">$</span>collective_bargaining_coverage)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>x &lt;numeric&gt; 
+# total N=4496 valid N=560 mean=4.60 sd=2.61
+
+Value |    N | Raw % | Valid % | Cum. %
+---------------------------------------
+    0 |   13 |  0.29 |    2.32 |   2.32
+    1 |   43 |  0.96 |    7.68 |  10.00
+    2 |   64 |  1.42 |   11.43 |  21.43
+    3 |   97 |  2.16 |   17.32 |  38.75
+    4 |   81 |  1.80 |   14.46 |  53.21
+    5 |   74 |  1.65 |   13.21 |  66.43
+    6 |   83 |  1.85 |   14.82 |  81.25
+    7 |   24 |  0.53 |    4.29 |  85.54
+    8 |   28 |  0.62 |    5.00 |  90.54
+    9 |   26 |  0.58 |    4.64 |  95.18
+   10 |   11 |  0.24 |    1.96 |  97.14
+   11 |    5 |  0.11 |    0.89 |  98.04
+   12 |   11 |  0.24 |    1.96 | 100.00
+ &lt;NA&gt; | 3936 | 87.54 |    &lt;NA&gt; |   &lt;NA&gt;</code></pre>
+</div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb21"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb21-1"><a href="#cb21-1" aria-hidden="true" tabindex="-1"></a><span class="fu">summary</span>(proc<span class="sc">$</span>union_power)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>   Min. 1st Qu.  Median    Mean 3rd Qu.    Max.    NA's 
+ 0.0027  0.0802  0.1282  0.1578  0.2000  0.9130    3958 </code></pre>
+</div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb23"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb23-1"><a href="#cb23-1" aria-hidden="true" tabindex="-1"></a><span class="fu">frq</span>(proc<span class="sc">$</span>confederation)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>x &lt;numeric&gt; 
+# total N=4496 valid N=913 mean=0.39 sd=0.49
+
+Value |    N | Raw % | Valid % | Cum. %
+---------------------------------------
+    0 |  558 | 12.41 |   61.12 |  61.12
+    1 |  355 |  7.90 |   38.88 | 100.00
+ &lt;NA&gt; | 3583 | 79.69 |    &lt;NA&gt; |   &lt;NA&gt;</code></pre>
+</div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb25"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb25-1"><a href="#cb25-1" aria-hidden="true" tabindex="-1"></a><span class="fu">frq</span>(proc<span class="sc">$</span>legal_mobilization)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>x &lt;integer&gt; 
+# total N=4496 valid N=4496 mean=0.43 sd=0.50
+
+Value |    N | Raw % | Valid % | Cum. %
+---------------------------------------
+    0 | 2542 | 56.54 |   56.54 |  56.54
+    1 | 1954 | 43.46 |   43.46 | 100.00
+ &lt;NA&gt; |    0 |  0.00 |    &lt;NA&gt; |   &lt;NA&gt;</code></pre>
+</div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb27"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb27-1"><a href="#cb27-1" aria-hidden="true" tabindex="-1"></a><span class="fu">frq</span>(proc<span class="sc">$</span>strikes)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>x &lt;integer&gt; 
+# total N=4496 valid N=4496 mean=0.05 sd=0.22
+
+Value |    N | Raw % | Valid % | Cum. %
+---------------------------------------
+    0 | 4261 | 94.77 |   94.77 |  94.77
+    1 |  235 |  5.23 |    5.23 | 100.00
+ &lt;NA&gt; |    0 |  0.00 |    &lt;NA&gt; |   &lt;NA&gt;</code></pre>
+</div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb29"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb29-1"><a href="#cb29-1" aria-hidden="true" tabindex="-1"></a><span class="co"># 6.3. Controles</span></span>
+<span id="cb29-2"><a href="#cb29-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb29-3"><a href="#cb29-3" aria-hidden="true" tabindex="-1"></a><span class="fu">frq</span>(proc<span class="sc">$</span>economic_industry)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>x &lt;categorical&gt; 
+# total N=4496 valid N=4496 mean=6.92 sd=3.54
+
+Value                                                                     
+--------------------------------------------------------------------------
+Agricultura, ganadería, silvicultura y pesca                              
+Minería                                                                   
+Industria manufacturera                                                   
+Suministro de electricidad, gas y agua; Gestión de desechos               
+Construcción                                                              
+Comercio                                                                  
+Transporte, almacenamiento, información y comunicaciones                  
+Alojamiento y servicio de comidas                                         
+Actividades financieras y de seguros; Actividades inmobiliarias           
+Actividades profesionales y técnicas; Servicios administrativos y de apoyo
+Enseñanza                                                                 
+Salud y asistencia social                                                 
+Actividades artísticas y recreativas; Otros servicios                     
+&lt;NA&gt;                                                                      
+
+  N | Raw % | Valid % | Cum. %
+------------------------------
+385 |  8.56 |    8.56 |   8.56
+159 |  3.54 |    3.54 |  12.10
+456 | 10.14 |   10.14 |  22.24
+226 |  5.03 |    5.03 |  27.27
+447 |  9.94 |    9.94 |  37.21
+498 | 11.08 |   11.08 |  48.29
+381 |  8.47 |    8.47 |  56.76
+309 |  6.87 |    6.87 |  63.63
+202 |  4.49 |    4.49 |  68.13
+466 | 10.36 |   10.36 |  78.49
+482 | 10.72 |   10.72 |  89.21
+316 |  7.03 |    7.03 |  96.24
+169 |  3.76 |    3.76 | 100.00
+  0 |  0.00 |    &lt;NA&gt; |   &lt;NA&gt;</code></pre>
+</div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb31"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb31-1"><a href="#cb31-1" aria-hidden="true" tabindex="-1"></a><span class="fu">frq</span>(proc<span class="sc">$</span>company_size)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>x &lt;numeric&gt; 
+# total N=4496 valid N=4496 mean=1.68 sd=0.81
+
+Value |    N | Raw % | Valid % | Cum. %
+---------------------------------------
+    1 | 2428 | 54.00 |   54.00 |  54.00
+    2 | 1087 | 24.18 |   24.18 |  78.18
+    3 |  981 | 21.82 |   21.82 | 100.00
+ &lt;NA&gt; |    0 |  0.00 |    &lt;NA&gt; |   &lt;NA&gt;</code></pre>
+</div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb33"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb33-1"><a href="#cb33-1" aria-hidden="true" tabindex="-1"></a><span class="fu">summary</span>(proc<span class="sc">$</span>temporary_workers)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>   Min. 1st Qu.  Median    Mean 3rd Qu.    Max. 
+0.00000 0.00000 0.08943 0.20246 0.28571 1.00000 </code></pre>
+</div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb35"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb35-1"><a href="#cb35-1" aria-hidden="true" tabindex="-1"></a><span class="fu">summary</span>(proc<span class="sc">$</span>part_time_workers)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>     Min.   1st Qu.    Median      Mean   3rd Qu.      Max. 
+0.0000000 0.0000000 0.0000000 0.0430164 0.0008876 1.0000000 </code></pre>
+</div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb37"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb37-1"><a href="#cb37-1" aria-hidden="true" tabindex="-1"></a><span class="fu">summary</span>(proc<span class="sc">$</span>managers_workforce)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>   Min. 1st Qu.  Median    Mean 3rd Qu.    Max. 
+0.00000 0.07586 0.14130 0.17846 0.22872 1.00000 </code></pre>
+</div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb39"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb39-1"><a href="#cb39-1" aria-hidden="true" tabindex="-1"></a><span class="fu">summary</span>(proc<span class="sc">$</span>female_employees)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>   Min. 1st Qu.  Median    Mean 3rd Qu.    Max. 
+ 0.0000  0.1372  0.3488  0.3991  0.6440  1.0000 </code></pre>
+</div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb41"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb41-1"><a href="#cb41-1" aria-hidden="true" tabindex="-1"></a><span class="fu">frq</span>(proc<span class="sc">$</span>exports_products)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>x &lt;numeric&gt; 
+# total N=4496 valid N=4496 mean=0.07 sd=0.26
+
+Value |    N | Raw % | Valid % | Cum. %
+---------------------------------------
+    0 | 4163 | 92.59 |   92.59 |  92.59
+    1 |  333 |  7.41 |    7.41 | 100.00
+ &lt;NA&gt; |    0 |  0.00 |    &lt;NA&gt; |   &lt;NA&gt;</code></pre>
+</div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb43"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb43-1"><a href="#cb43-1" aria-hidden="true" tabindex="-1"></a><span class="fu">summary</span>(proc<span class="sc">$</span>subcontracted_workers)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>   Min. 1st Qu.  Median    Mean 3rd Qu.    Max.    NA's 
+ 0.0004  0.1037  0.2802  1.2396  0.7840 80.9756    3820 </code></pre>
+</div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb45"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb45-1"><a href="#cb45-1" aria-hidden="true" tabindex="-1"></a><span class="fu">frq</span>(proc<span class="sc">$</span>subcontractor_company)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>x &lt;numeric&gt; 
+# total N=4496 valid N=4496 mean=0.14 sd=0.35
+
+Value |    N | Raw % | Valid % | Cum. %
+---------------------------------------
+    0 | 3862 | 85.90 |   85.90 |  85.90
+    1 |  634 | 14.10 |   14.10 | 100.00
+ &lt;NA&gt; |    0 |  0.00 |    &lt;NA&gt; |   &lt;NA&gt;</code></pre>
+</div>
+</div>
+</section>
+<section id="seleccionar-variables-1" class="level1">
+<h1>7. Seleccionar variables</h1>
+<div class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb47"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb47-1"><a href="#cb47-1" aria-hidden="true" tabindex="-1"></a>proc <span class="ot">&lt;-</span> proc <span class="sc">%&gt;%</span> <span class="fu">select</span>(camara, gremio,</span>
+<span id="cb47-2"><a href="#cb47-2" aria-hidden="true" tabindex="-1"></a>                        </span>
+<span id="cb47-3"><a href="#cb47-3" aria-hidden="true" tabindex="-1"></a>                        union, union_afiliation, fragmentation, collective_bargaining_coverage, union_power,</span>
+<span id="cb47-4"><a href="#cb47-4" aria-hidden="true" tabindex="-1"></a>                        confederation, legal_mobilization, strikes, </span>
+<span id="cb47-5"><a href="#cb47-5" aria-hidden="true" tabindex="-1"></a>                        </span>
+<span id="cb47-6"><a href="#cb47-6" aria-hidden="true" tabindex="-1"></a>                        economic_industry, company_size, temporary_workers, part_time_workers, managers_workforce,</span>
+<span id="cb47-7"><a href="#cb47-7" aria-hidden="true" tabindex="-1"></a>                        female_employees, exports_products, subcontracted_workers, subcontractor_company)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</div>
+</section>
+<section id="exportar-datos" class="level1">
+<h1>8. Exportar datos</h1>
+<div class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb48"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb48-1"><a href="#cb48-1" aria-hidden="true" tabindex="-1"></a><span class="fu">saveRDS</span>(proc, <span class="at">file =</span> <span class="st">"C:/Users/javie/OneDrive/Sociologia/CONCLAT/employer associations and power/Employer-associations-and-power-1/output/proc.rds"</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</div>
+</section>
+
+</main>
+<!-- /main column -->
+<script id="quarto-html-after-body" type="application/javascript">
+  window.document.addEventListener("DOMContentLoaded", function (event) {
+    const icon = "";
+    const anchorJS = new window.AnchorJS();
+    anchorJS.options = {
+      placement: 'right',
+      icon: icon
+    };
+    anchorJS.add('.anchored');
+    const isCodeAnnotation = (el) => {
+      for (const clz of el.classList) {
+        if (clz.startsWith('code-annotation-')) {                     
+          return true;
+        }
+      }
+      return false;
+    }
+    const onCopySuccess = function(e) {
+      // button target
+      const button = e.trigger;
+      // don't keep focus
+      button.blur();
+      // flash "checked"
+      button.classList.add('code-copy-button-checked');
+      var currentTitle = button.getAttribute("title");
+      button.setAttribute("title", "Copied!");
+      let tooltip;
+      if (window.bootstrap) {
+        button.setAttribute("data-bs-toggle", "tooltip");
+        button.setAttribute("data-bs-placement", "left");
+        button.setAttribute("data-bs-title", "Copied!");
+        tooltip = new bootstrap.Tooltip(button, 
+          { trigger: "manual", 
+            customClass: "code-copy-button-tooltip",
+            offset: [0, -8]});
+        tooltip.show();    
+      }
+      setTimeout(function() {
+        if (tooltip) {
+          tooltip.hide();
+          button.removeAttribute("data-bs-title");
+          button.removeAttribute("data-bs-toggle");
+          button.removeAttribute("data-bs-placement");
+        }
+        button.setAttribute("title", currentTitle);
+        button.classList.remove('code-copy-button-checked');
+      }, 1000);
+      // clear code selection
+      e.clearSelection();
+    }
+    const getTextToCopy = function(trigger) {
+      const outerScaffold = trigger.parentElement.cloneNode(true);
+      const codeEl = outerScaffold.querySelector('code');
+      for (const childEl of codeEl.children) {
+        if (isCodeAnnotation(childEl)) {
+          childEl.remove();
+        }
+      }
+      return codeEl.innerText;
+    }
+    const clipboard = new window.ClipboardJS('.code-copy-button:not([data-in-quarto-modal])', {
+      text: getTextToCopy
+    });
+    clipboard.on('success', onCopySuccess);
+    if (window.document.getElementById('quarto-embedded-source-code-modal')) {
+      const clipboardModal = new window.ClipboardJS('.code-copy-button[data-in-quarto-modal]', {
+        text: getTextToCopy,
+        container: window.document.getElementById('quarto-embedded-source-code-modal')
+      });
+      clipboardModal.on('success', onCopySuccess);
+    }
+      var localhostRegex = new RegExp(/^(?:http|https):\/\/localhost\:?[0-9]*\//);
+      var mailtoRegex = new RegExp(/^mailto:/);
+        var filterRegex = new RegExp('/' + window.location.host + '/');
+      var isInternal = (href) => {
+          return filterRegex.test(href) || localhostRegex.test(href) || mailtoRegex.test(href);
+      }
+      // Inspect non-navigation links and adorn them if external
+     var links = window.document.querySelectorAll('a[href]:not(.nav-link):not(.navbar-brand):not(.toc-action):not(.sidebar-link):not(.sidebar-item-toggle):not(.pagination-link):not(.no-external):not([aria-hidden]):not(.dropdown-item):not(.quarto-navigation-tool):not(.about-link)');
+      for (var i=0; i<links.length; i++) {
+        const link = links[i];
+        if (!isInternal(link.href)) {
+          // undo the damage that might have been done by quarto-nav.js in the case of
+          // links that we want to consider external
+          if (link.dataset.originalHref !== undefined) {
+            link.href = link.dataset.originalHref;
+          }
+        }
+      }
+    function tippyHover(el, contentFn, onTriggerFn, onUntriggerFn) {
+      const config = {
+        allowHTML: true,
+        maxWidth: 500,
+        delay: 100,
+        arrow: false,
+        appendTo: function(el) {
+            return el.parentElement;
+        },
+        interactive: true,
+        interactiveBorder: 10,
+        theme: 'quarto',
+        placement: 'bottom-start',
+      };
+      if (contentFn) {
+        config.content = contentFn;
+      }
+      if (onTriggerFn) {
+        config.onTrigger = onTriggerFn;
+      }
+      if (onUntriggerFn) {
+        config.onUntrigger = onUntriggerFn;
+      }
+      window.tippy(el, config); 
+    }
+    const noterefs = window.document.querySelectorAll('a[role="doc-noteref"]');
+    for (var i=0; i<noterefs.length; i++) {
+      const ref = noterefs[i];
+      tippyHover(ref, function() {
+        // use id or data attribute instead here
+        let href = ref.getAttribute('data-footnote-href') || ref.getAttribute('href');
+        try { href = new URL(href).hash; } catch {}
+        const id = href.replace(/^#\/?/, "");
+        const note = window.document.getElementById(id);
+        if (note) {
+          return note.innerHTML;
+        } else {
+          return "";
+        }
+      });
+    }
+    const xrefs = window.document.querySelectorAll('a.quarto-xref');
+    const processXRef = (id, note) => {
+      // Strip column container classes
+      const stripColumnClz = (el) => {
+        el.classList.remove("page-full", "page-columns");
+        if (el.children) {
+          for (const child of el.children) {
+            stripColumnClz(child);
+          }
+        }
+      }
+      stripColumnClz(note)
+      if (id === null || id.startsWith('sec-')) {
+        // Special case sections, only their first couple elements
+        const container = document.createElement("div");
+        if (note.children && note.children.length > 2) {
+          container.appendChild(note.children[0].cloneNode(true));
+          for (let i = 1; i < note.children.length; i++) {
+            const child = note.children[i];
+            if (child.tagName === "P" && child.innerText === "") {
+              continue;
+            } else {
+              container.appendChild(child.cloneNode(true));
+              break;
+            }
+          }
+          if (window.Quarto?.typesetMath) {
+            window.Quarto.typesetMath(container);
+          }
+          return container.innerHTML
+        } else {
+          if (window.Quarto?.typesetMath) {
+            window.Quarto.typesetMath(note);
+          }
+          return note.innerHTML;
+        }
+      } else {
+        // Remove any anchor links if they are present
+        const anchorLink = note.querySelector('a.anchorjs-link');
+        if (anchorLink) {
+          anchorLink.remove();
+        }
+        if (window.Quarto?.typesetMath) {
+          window.Quarto.typesetMath(note);
+        }
+        if (note.classList.contains("callout")) {
+          return note.outerHTML;
+        } else {
+          return note.innerHTML;
+        }
+      }
+    }
+    for (var i=0; i<xrefs.length; i++) {
+      const xref = xrefs[i];
+      tippyHover(xref, undefined, function(instance) {
+        instance.disable();
+        let url = xref.getAttribute('href');
+        let hash = undefined; 
+        if (url.startsWith('#')) {
+          hash = url;
+        } else {
+          try { hash = new URL(url).hash; } catch {}
+        }
+        if (hash) {
+          const id = hash.replace(/^#\/?/, "");
+          const note = window.document.getElementById(id);
+          if (note !== null) {
+            try {
+              const html = processXRef(id, note.cloneNode(true));
+              instance.setContent(html);
+            } finally {
+              instance.enable();
+              instance.show();
+            }
+          } else {
+            // See if we can fetch this
+            fetch(url.split('#')[0])
+            .then(res => res.text())
+            .then(html => {
+              const parser = new DOMParser();
+              const htmlDoc = parser.parseFromString(html, "text/html");
+              const note = htmlDoc.getElementById(id);
+              if (note !== null) {
+                const html = processXRef(id, note);
+                instance.setContent(html);
+              } 
+            }).finally(() => {
+              instance.enable();
+              instance.show();
+            });
+          }
+        } else {
+          // See if we can fetch a full url (with no hash to target)
+          // This is a special case and we should probably do some content thinning / targeting
+          fetch(url)
+          .then(res => res.text())
+          .then(html => {
+            const parser = new DOMParser();
+            const htmlDoc = parser.parseFromString(html, "text/html");
+            const note = htmlDoc.querySelector('main.content');
+            if (note !== null) {
+              // This should only happen for chapter cross references
+              // (since there is no id in the URL)
+              // remove the first header
+              if (note.children.length > 0 && note.children[0].tagName === "HEADER") {
+                note.children[0].remove();
+              }
+              const html = processXRef(null, note);
+              instance.setContent(html);
+            } 
+          }).finally(() => {
+            instance.enable();
+            instance.show();
+          });
+        }
+      }, function(instance) {
+      });
+    }
+        let selectedAnnoteEl;
+        const selectorForAnnotation = ( cell, annotation) => {
+          let cellAttr = 'data-code-cell="' + cell + '"';
+          let lineAttr = 'data-code-annotation="' +  annotation + '"';
+          const selector = 'span[' + cellAttr + '][' + lineAttr + ']';
+          return selector;
+        }
+        const selectCodeLines = (annoteEl) => {
+          const doc = window.document;
+          const targetCell = annoteEl.getAttribute("data-target-cell");
+          const targetAnnotation = annoteEl.getAttribute("data-target-annotation");
+          const annoteSpan = window.document.querySelector(selectorForAnnotation(targetCell, targetAnnotation));
+          const lines = annoteSpan.getAttribute("data-code-lines").split(",");
+          const lineIds = lines.map((line) => {
+            return targetCell + "-" + line;
+          })
+          let top = null;
+          let height = null;
+          let parent = null;
+          if (lineIds.length > 0) {
+              //compute the position of the single el (top and bottom and make a div)
+              const el = window.document.getElementById(lineIds[0]);
+              top = el.offsetTop;
+              height = el.offsetHeight;
+              parent = el.parentElement.parentElement;
+            if (lineIds.length > 1) {
+              const lastEl = window.document.getElementById(lineIds[lineIds.length - 1]);
+              const bottom = lastEl.offsetTop + lastEl.offsetHeight;
+              height = bottom - top;
+            }
+            if (top !== null && height !== null && parent !== null) {
+              // cook up a div (if necessary) and position it 
+              let div = window.document.getElementById("code-annotation-line-highlight");
+              if (div === null) {
+                div = window.document.createElement("div");
+                div.setAttribute("id", "code-annotation-line-highlight");
+                div.style.position = 'absolute';
+                parent.appendChild(div);
+              }
+              div.style.top = top - 2 + "px";
+              div.style.height = height + 4 + "px";
+              div.style.left = 0;
+              let gutterDiv = window.document.getElementById("code-annotation-line-highlight-gutter");
+              if (gutterDiv === null) {
+                gutterDiv = window.document.createElement("div");
+                gutterDiv.setAttribute("id", "code-annotation-line-highlight-gutter");
+                gutterDiv.style.position = 'absolute';
+                const codeCell = window.document.getElementById(targetCell);
+                const gutter = codeCell.querySelector('.code-annotation-gutter');
+                gutter.appendChild(gutterDiv);
+              }
+              gutterDiv.style.top = top - 2 + "px";
+              gutterDiv.style.height = height + 4 + "px";
+            }
+            selectedAnnoteEl = annoteEl;
+          }
+        };
+        const unselectCodeLines = () => {
+          const elementsIds = ["code-annotation-line-highlight", "code-annotation-line-highlight-gutter"];
+          elementsIds.forEach((elId) => {
+            const div = window.document.getElementById(elId);
+            if (div) {
+              div.remove();
+            }
+          });
+          selectedAnnoteEl = undefined;
+        };
+          // Handle positioning of the toggle
+      window.addEventListener(
+        "resize",
+        throttle(() => {
+          elRect = undefined;
+          if (selectedAnnoteEl) {
+            selectCodeLines(selectedAnnoteEl);
+          }
+        }, 10)
+      );
+      function throttle(fn, ms) {
+      let throttle = false;
+      let timer;
+        return (...args) => {
+          if(!throttle) { // first call gets through
+              fn.apply(this, args);
+              throttle = true;
+          } else { // all the others get throttled
+              if(timer) clearTimeout(timer); // cancel #2
+              timer = setTimeout(() => {
+                fn.apply(this, args);
+                timer = throttle = false;
+              }, ms);
+          }
+        };
+      }
+        // Attach click handler to the DT
+        const annoteDls = window.document.querySelectorAll('dt[data-target-cell]');
+        for (const annoteDlNode of annoteDls) {
+          annoteDlNode.addEventListener('click', (event) => {
+            const clickedEl = event.target;
+            if (clickedEl !== selectedAnnoteEl) {
+              unselectCodeLines();
+              const activeEl = window.document.querySelector('dt[data-target-cell].code-annotation-active');
+              if (activeEl) {
+                activeEl.classList.remove('code-annotation-active');
+              }
+              selectCodeLines(clickedEl);
+              clickedEl.classList.add('code-annotation-active');
+            } else {
+              // Unselect the line
+              unselectCodeLines();
+              clickedEl.classList.remove('code-annotation-active');
+            }
+          });
+        }
+    const findCites = (el) => {
+      const parentEl = el.parentElement;
+      if (parentEl) {
+        const cites = parentEl.dataset.cites;
+        if (cites) {
+          return {
+            el,
+            cites: cites.split(' ')
+          };
+        } else {
+          return findCites(el.parentElement)
+        }
+      } else {
+        return undefined;
+      }
+    };
+    var bibliorefs = window.document.querySelectorAll('a[role="doc-biblioref"]');
+    for (var i=0; i<bibliorefs.length; i++) {
+      const ref = bibliorefs[i];
+      const citeInfo = findCites(ref);
+      if (citeInfo) {
+        tippyHover(citeInfo.el, function() {
+          var popup = window.document.createElement('div');
+          citeInfo.cites.forEach(function(cite) {
+            var citeDiv = window.document.createElement('div');
+            citeDiv.classList.add('hanging-indent');
+            citeDiv.classList.add('csl-entry');
+            var biblioDiv = window.document.getElementById('ref-' + cite);
+            if (biblioDiv) {
+              citeDiv.innerHTML = biblioDiv.innerHTML;
+            }
+            popup.appendChild(citeDiv);
+          });
+          return popup.innerHTML;
+        });
+      }
+    }
+  });
+  </script>
+</div> <!-- /content -->
+
+
+
+
+</body></html>
