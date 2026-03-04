@@ -1,0 +1,1 @@
+{"frames":[{"func":"saveRDS(proc, file = \"C:/Users/javie/OneDrive/Sociologia/CONCLAT/employer associations and power/Employer-associations-and-power-1/output/proc.rds\")","file":"","line_number":0,"end_line_number":0,"character_number":0,"end_character_number":0}],"message":"Error: objeto 'proc' no encontrado\n"}

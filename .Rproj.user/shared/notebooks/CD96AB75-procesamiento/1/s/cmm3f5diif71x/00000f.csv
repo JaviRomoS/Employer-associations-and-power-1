@@ -1,5 +1,5 @@
 "0","proc <- bind_cols(autoaplicado %>% dplyr::select(k2,k3_3, starts_with(""m3""),actividad_economica,starts_with(""a3""),starts_with(""a4""),a7,starts_with(""b1""),"
 "0","                                                 starts_with(""c2""),starts_with(""c3""),c10,"
-"0","                                                 starts_with(""f1"")),"
+"0","                                                 starts_with(""f1""), starts_with(""c1"")),"
 "0","                  empleadores %>% dplyr::select(j4,starts_with(""j5""),starts_with(""l1"")),"
-"0","                  sindtrab %>% dplyr::select(sindicato, starts_with(""k21""),starts_with(""k22""), starts_with(""k23"")))"
+"0","                  sindtrab %>% dplyr::select(sindicato, starts_with(""k2_""),starts_with(""k21""),starts_with(""k22""), starts_with(""k23"")))"

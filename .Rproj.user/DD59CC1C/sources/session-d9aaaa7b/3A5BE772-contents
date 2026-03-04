@@ -1,0 +1,57 @@
+---
+title: "Analisis"
+author: Javiera Romo Sanchez
+format: html
+editor: source
+execute:
+  echo: true
+  warning: false
+  message: false
+---
+
+## Cargar librerias
+
+```{r}
+rm(list = ls())
+
+library(pacman)
+pacman::p_load(tidyverse, dplyr, haven, sjmisc, sjPlot, summarytools)
+
+```
+
+## Abrir base de datos
+
+```{r}
+data <- readRDS("C:/Users/javie/OneDrive/Sociologia/CONCLAT/employer associations and power/Employer-associations-and-power-1/output/proc.rds")
+```
+
+## Seleccionar variables
+
+```{r}
+subset1 <- data %>% select(employer_association, union_density_dummy, fragmentation, legal_mobilization, strikes, economic_industry, company_size, exports_products, temporary_workers, part_time_workers, subcontracts_workers, female_employees) %>% na.omit()
+
+subset2 <- data %>% select(employer_association, union_density_dummy, fragmentation, legal_mobilization, strikes, economic_industry, company_size, exports_products, temporary_workers, part_time_workers, subcontracts_workers, female_employees,  confederation) %>% na.omit()
+
+subset3 <- data %>% select(employer_association, union_density_dummy, fragmentation, legal_mobilization, strikes, economic_industry, company_size, exports_products, temporary_workers, part_time_workers, subcontracts_workers, female_employees, collective_bargaining_coverage) %>% na.omit()
+```
+
+
+## Correr modelos
+
+```{r}
+model1 <- glm(employer_association ~ union_density_dummy + fragmentation + legal_mobilization + strikes + exports_products + temporary_workers + part_time_workers + subcontracts_workers + female_employees + company_size + economic_industry, data=subset1, family=binomial)
+
+summary(model1)
+
+model2 <- glm(employer_association ~ union_density_dummy + fragmentation + confederation + legal_mobilization + strikes + exports_products + temporary_workers + part_time_workers + subcontracts_workers + female_employees + company_size + economic_industry, data=subset2, family=binomial)
+
+summary(model2)
+
+model3 <- glm(employer_association ~ union_density_dummy + collective_bargaining_coverage + fragmentation + legal_mobilization + strikes + exports_products + temporary_workers + part_time_workers + subcontracts_workers + female_employees + company_size + economic_industry, data=subset3, family=binomial)
+
+summary(model3)
+
+# model1 es el que mejor funciona
+
+```
+

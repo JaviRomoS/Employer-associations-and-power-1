@@ -1,0 +1,3 @@
+"0","data <- readRDS(""output/proc.rds"")"
+"2","Error en gzfile(file, ""rb""): no se puede abrir la conexión
+"

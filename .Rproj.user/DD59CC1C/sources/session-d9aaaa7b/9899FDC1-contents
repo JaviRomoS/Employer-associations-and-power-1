@@ -195,7 +195,7 @@ frq(proc$subcontractor_company)
 ```{r}
 proc <- proc %>% select(employer_association,
                         
-                        union, union_density, fragmentation, collective_bargaining_coverage, confederation, 
+                        union, union_density, union_density_dummy, fragmentation, collective_bargaining_coverage, confederation, 
                         legal_mobilization, strikes, 
                         
                         economic_industry, company_size, temporary_workers, part_time_workers, managers_workforce,
