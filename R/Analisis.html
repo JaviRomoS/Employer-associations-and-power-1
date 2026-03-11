@@ -1,0 +1,989 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en"><head>
+
+<meta charset="utf-8">
+<meta name="generator" content="quarto-1.8.25">
+
+<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
+
+<meta name="author" content="Javiera Romo Sanchez">
+
+<title>Analisis</title>
+<style>
+code{white-space: pre-wrap;}
+span.smallcaps{font-variant: small-caps;}
+div.columns{display: flex; gap: min(4vw, 1.5em);}
+div.column{flex: auto; overflow-x: auto;}
+div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+ul.task-list{list-style: none;}
+ul.task-list li input[type="checkbox"] {
+  width: 0.8em;
+  margin: 0 0.8em 0.2em -1em; /* quarto-specific, see https://github.com/quarto-dev/quarto-cli/issues/4556 */ 
+  vertical-align: middle;
+}
+/* CSS for syntax highlighting */
+html { -webkit-text-size-adjust: 100%; }
+pre > code.sourceCode { white-space: pre; position: relative; }
+pre > code.sourceCode > span { display: inline-block; line-height: 1.25; }
+pre > code.sourceCode > span:empty { height: 1.2em; }
+.sourceCode { overflow: visible; }
+code.sourceCode > span { color: inherit; text-decoration: inherit; }
+div.sourceCode { margin: 1em 0; }
+pre.sourceCode { margin: 0; }
+@media screen {
+div.sourceCode { overflow: auto; }
+}
+@media print {
+pre > code.sourceCode { white-space: pre-wrap; }
+pre > code.sourceCode > span { text-indent: -5em; padding-left: 5em; }
+}
+pre.numberSource code
+  { counter-reset: source-line 0; }
+pre.numberSource code > span
+  { position: relative; left: -4em; counter-increment: source-line; }
+pre.numberSource code > span > a:first-child::before
+  { content: counter(source-line);
+    position: relative; left: -1em; text-align: right; vertical-align: baseline;
+    border: none; display: inline-block;
+    -webkit-touch-callout: none; -webkit-user-select: none;
+    -khtml-user-select: none; -moz-user-select: none;
+    -ms-user-select: none; user-select: none;
+    padding: 0 4px; width: 4em;
+  }
+pre.numberSource { margin-left: 3em;  padding-left: 4px; }
+div.sourceCode
+  {   }
+@media screen {
+pre > code.sourceCode > span > a:first-child::before { text-decoration: underline; }
+}
+</style>
+
+
+<script src="Analisis_files/libs/clipboard/clipboard.min.js"></script>
+<script src="Analisis_files/libs/quarto-html/quarto.js" type="module"></script>
+<script src="Analisis_files/libs/quarto-html/tabsets/tabsets.js" type="module"></script>
+<script src="Analisis_files/libs/quarto-html/axe/axe-check.js" type="module"></script>
+<script src="Analisis_files/libs/quarto-html/popper.min.js"></script>
+<script src="Analisis_files/libs/quarto-html/tippy.umd.min.js"></script>
+<script src="Analisis_files/libs/quarto-html/anchor.min.js"></script>
+<link href="Analisis_files/libs/quarto-html/tippy.css" rel="stylesheet">
+<link href="Analisis_files/libs/quarto-html/quarto-syntax-highlighting-7b89279ff1a6dce999919e0e67d4d9ec.css" rel="stylesheet" id="quarto-text-highlighting-styles">
+<script src="Analisis_files/libs/bootstrap/bootstrap.min.js"></script>
+<link href="Analisis_files/libs/bootstrap/bootstrap-icons.css" rel="stylesheet">
+<link href="Analisis_files/libs/bootstrap/bootstrap-9e3ffae467580fdb927a41352e75a2e0.min.css" rel="stylesheet" append-hash="true" id="quarto-bootstrap" data-mode="light">
+
+
+</head>
+
+<body class="fullcontent quarto-light">
+
+<div id="quarto-content" class="page-columns page-rows-contents page-layout-article">
+
+<main class="content" id="quarto-document-content">
+
+<header id="title-block-header" class="quarto-title-block default">
+<div class="quarto-title">
+<h1 class="title">Analisis</h1>
+</div>
+
+
+
+<div class="quarto-title-meta">
+
+    <div>
+    <div class="quarto-title-meta-heading">Author</div>
+    <div class="quarto-title-meta-contents">
+             <p>Javiera Romo Sanchez </p>
+          </div>
+  </div>
+    
+  
+    
+  </div>
+  
+
+
+</header>
+
+
+<section id="cargar-librerias" class="level2">
+<h2 class="anchored" data-anchor-id="cargar-librerias">Cargar librerias</h2>
+<div class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb1"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="fu">rm</span>(<span class="at">list =</span> <span class="fu">ls</span>())</span>
+<span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-3"><a href="#cb1-3" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(pacman)</span>
+<span id="cb1-4"><a href="#cb1-4" aria-hidden="true" tabindex="-1"></a>pacman<span class="sc">::</span><span class="fu">p_load</span>(tidyverse, dplyr, haven, sjmisc, sjPlot, summarytools)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</div>
+</section>
+<section id="abrir-base-de-datos" class="level2">
+<h2 class="anchored" data-anchor-id="abrir-base-de-datos">Abrir base de datos</h2>
+<div class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb2"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a>data <span class="ot">&lt;-</span> <span class="fu">readRDS</span>(<span class="st">"C:/Users/javie/OneDrive/Sociologia/CONCLAT/employer associations and power/Employer-associations-and-power-1/output/proc.rds"</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</div>
+</section>
+<section id="seleccionar-variables" class="level2">
+<h2 class="anchored" data-anchor-id="seleccionar-variables">Seleccionar variables</h2>
+<div class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb3"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a>subset1 <span class="ot">&lt;-</span> data <span class="sc">%&gt;%</span> <span class="fu">select</span>(employer_association, union_density_dummy, fragmentation, legal_mobilization, strikes, economic_industry, company_size, exports_products, temporary_workers, part_time_workers, subcontracts_workers, female_employees) <span class="sc">%&gt;%</span> <span class="fu">na.omit</span>()</span>
+<span id="cb3-2"><a href="#cb3-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb3-3"><a href="#cb3-3" aria-hidden="true" tabindex="-1"></a>subset2 <span class="ot">&lt;-</span> data <span class="sc">%&gt;%</span> <span class="fu">select</span>(employer_association, union_density_dummy, fragmentation, legal_mobilization, strikes, economic_industry, company_size, exports_products, temporary_workers, part_time_workers, subcontracts_workers, female_employees,  confederation) <span class="sc">%&gt;%</span> <span class="fu">na.omit</span>()</span>
+<span id="cb3-4"><a href="#cb3-4" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb3-5"><a href="#cb3-5" aria-hidden="true" tabindex="-1"></a>subset3 <span class="ot">&lt;-</span> data <span class="sc">%&gt;%</span> <span class="fu">select</span>(employer_association, union_density_dummy, fragmentation, legal_mobilization, strikes, economic_industry, company_size, exports_products, temporary_workers, part_time_workers, subcontracts_workers, female_employees, collective_bargaining_coverage) <span class="sc">%&gt;%</span> <span class="fu">na.omit</span>()</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</div>
+</section>
+<section id="correr-modelos" class="level2">
+<h2 class="anchored" data-anchor-id="correr-modelos">Correr modelos</h2>
+<div class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb4"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb4-1"><a href="#cb4-1" aria-hidden="true" tabindex="-1"></a>model1 <span class="ot">&lt;-</span> <span class="fu">glm</span>(employer_association <span class="sc">~</span> union_density_dummy <span class="sc">+</span> fragmentation <span class="sc">+</span> legal_mobilization <span class="sc">+</span> strikes <span class="sc">+</span> exports_products <span class="sc">+</span> temporary_workers <span class="sc">+</span> part_time_workers <span class="sc">+</span> subcontracts_workers <span class="sc">+</span> female_employees <span class="sc">+</span> company_size <span class="sc">+</span> economic_industry, <span class="at">data=</span>subset1, <span class="at">family=</span>binomial)</span>
+<span id="cb4-2"><a href="#cb4-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb4-3"><a href="#cb4-3" aria-hidden="true" tabindex="-1"></a><span class="fu">summary</span>(model1)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>
+Call:
+glm(formula = employer_association ~ union_density_dummy + fragmentation + 
+    legal_mobilization + strikes + exports_products + temporary_workers + 
+    part_time_workers + subcontracts_workers + female_employees + 
+    company_size + economic_industry, family = binomial, data = subset1)
+
+Coefficients:
+                                                                                             Estimate
+(Intercept)                                                                                 -2.166140
+union_density_dummy                                                                          0.083165
+fragmentation                                                                                0.156231
+legal_mobilization                                                                           0.105839
+strikes                                                                                      0.389585
+exports_products                                                                             0.404588
+temporary_workers                                                                           -0.103637
+part_time_workers                                                                           -0.260002
+subcontracts_workers                                                                         0.273755
+female_employees                                                                            -0.001302
+company_size                                                                                 0.469212
+economic_industryMinería                                                                     0.016849
+economic_industryIndustria manufacturera                                                     0.080988
+economic_industrySuministro de electricidad, gas y agua; Gestión de desechos                 0.446712
+economic_industryConstrucción                                                                0.550888
+economic_industryComercio                                                                    0.075578
+economic_industryTransporte, almacenamiento, información y comunicaciones                   -0.189305
+economic_industryAlojamiento y servicio de comidas                                           0.284744
+economic_industryActividades financieras y de seguros; Actividades inmobiliarias             0.349476
+economic_industryActividades profesionales y técnicas; Servicios administrativos y de apoyo -0.275165
+economic_industryEnseñanza                                                                  -0.634395
+economic_industrySalud y asistencia social                                                  -0.838959
+economic_industryActividades artísticas y recreativas; Otros servicios                      -0.451324
+                                                                                            Std. Error
+(Intercept)                                                                                   0.171907
+union_density_dummy                                                                           0.039236
+fragmentation                                                                                 0.121825
+legal_mobilization                                                                            0.085895
+strikes                                                                                       0.154234
+exports_products                                                                              0.143751
+temporary_workers                                                                             0.151044
+part_time_workers                                                                             0.375923
+subcontracts_workers                                                                          0.077113
+female_employees                                                                              0.001978
+company_size                                                                                  0.061298
+economic_industryMinería                                                                      0.237815
+economic_industryIndustria manufacturera                                                      0.169807
+economic_industrySuministro de electricidad, gas y agua; Gestión de desechos                  0.203787
+economic_industryConstrucción                                                                 0.169163
+economic_industryComercio                                                                     0.174655
+economic_industryTransporte, almacenamiento, información y comunicaciones                     0.186992
+economic_industryAlojamiento y servicio de comidas                                            0.205158
+economic_industryActividades financieras y de seguros; Actividades inmobiliarias              0.218882
+economic_industryActividades profesionales y técnicas; Servicios administrativos y de apoyo   0.181537
+economic_industryEnseñanza                                                                    0.215136
+economic_industrySalud y asistencia social                                                    0.249144
+economic_industryActividades artísticas y recreativas; Otros servicios                        0.259389
+                                                                                            z value
+(Intercept)                                                                                 -12.601
+union_density_dummy                                                                           2.120
+fragmentation                                                                                 1.282
+legal_mobilization                                                                            1.232
+strikes                                                                                       2.526
+exports_products                                                                              2.814
+temporary_workers                                                                            -0.686
+part_time_workers                                                                            -0.692
+subcontracts_workers                                                                          3.550
+female_employees                                                                             -0.658
+company_size                                                                                  7.655
+economic_industryMinería                                                                      0.071
+economic_industryIndustria manufacturera                                                      0.477
+economic_industrySuministro de electricidad, gas y agua; Gestión de desechos                  2.192
+economic_industryConstrucción                                                                 3.257
+economic_industryComercio                                                                     0.433
+economic_industryTransporte, almacenamiento, información y comunicaciones                    -1.012
+economic_industryAlojamiento y servicio de comidas                                            1.388
+economic_industryActividades financieras y de seguros; Actividades inmobiliarias              1.597
+economic_industryActividades profesionales y técnicas; Servicios administrativos y de apoyo  -1.516
+economic_industryEnseñanza                                                                   -2.949
+economic_industrySalud y asistencia social                                                   -3.367
+economic_industryActividades artísticas y recreativas; Otros servicios                       -1.740
+                                                                                            Pr(&gt;|z|)
+(Intercept)                                                                                  &lt; 2e-16
+union_density_dummy                                                                         0.034040
+fragmentation                                                                               0.199696
+legal_mobilization                                                                          0.217880
+strikes                                                                                     0.011539
+exports_products                                                                            0.004885
+temporary_workers                                                                           0.492624
+part_time_workers                                                                           0.489166
+subcontracts_workers                                                                        0.000385
+female_employees                                                                            0.510474
+company_size                                                                                1.94e-14
+economic_industryMinería                                                                    0.943518
+economic_industryIndustria manufacturera                                                    0.633404
+economic_industrySuministro de electricidad, gas y agua; Gestión de desechos                0.028375
+economic_industryConstrucción                                                               0.001128
+economic_industryComercio                                                                   0.665214
+economic_industryTransporte, almacenamiento, información y comunicaciones                   0.311360
+economic_industryAlojamiento y servicio de comidas                                          0.165160
+economic_industryActividades financieras y de seguros; Actividades inmobiliarias            0.110346
+economic_industryActividades profesionales y técnicas; Servicios administrativos y de apoyo 0.129582
+economic_industryEnseñanza                                                                  0.003190
+economic_industrySalud y asistencia social                                                  0.000759
+economic_industryActividades artísticas y recreativas; Otros servicios                      0.081868
+                                                                                               
+(Intercept)                                                                                 ***
+union_density_dummy                                                                         *  
+fragmentation                                                                                  
+legal_mobilization                                                                             
+strikes                                                                                     *  
+exports_products                                                                            ** 
+temporary_workers                                                                              
+part_time_workers                                                                              
+subcontracts_workers                                                                        ***
+female_employees                                                                               
+company_size                                                                                ***
+economic_industryMinería                                                                       
+economic_industryIndustria manufacturera                                                       
+economic_industrySuministro de electricidad, gas y agua; Gestión de desechos                *  
+economic_industryConstrucción                                                               ** 
+economic_industryComercio                                                                      
+economic_industryTransporte, almacenamiento, información y comunicaciones                      
+economic_industryAlojamiento y servicio de comidas                                             
+economic_industryActividades financieras y de seguros; Actividades inmobiliarias               
+economic_industryActividades profesionales y técnicas; Servicios administrativos y de apoyo    
+economic_industryEnseñanza                                                                  ** 
+economic_industrySalud y asistencia social                                                  ***
+economic_industryActividades artísticas y recreativas; Otros servicios                      .  
+---
+Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1
+
+(Dispersion parameter for binomial family taken to be 1)
+
+    Null deviance: 4924.3  on 4346  degrees of freedom
+Residual deviance: 4437.9  on 4324  degrees of freedom
+AIC: 4483.9
+
+Number of Fisher Scoring iterations: 4</code></pre>
+</div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb6"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb6-1"><a href="#cb6-1" aria-hidden="true" tabindex="-1"></a>model2 <span class="ot">&lt;-</span> <span class="fu">glm</span>(employer_association <span class="sc">~</span> union_density_dummy <span class="sc">+</span> fragmentation <span class="sc">+</span> confederation <span class="sc">+</span> legal_mobilization <span class="sc">+</span> strikes <span class="sc">+</span> exports_products <span class="sc">+</span> temporary_workers <span class="sc">+</span> part_time_workers <span class="sc">+</span> subcontracts_workers <span class="sc">+</span> female_employees <span class="sc">+</span> company_size <span class="sc">+</span> economic_industry, <span class="at">data=</span>subset2, <span class="at">family=</span>binomial)</span>
+<span id="cb6-2"><a href="#cb6-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb6-3"><a href="#cb6-3" aria-hidden="true" tabindex="-1"></a><span class="fu">summary</span>(model2)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>
+Call:
+glm(formula = employer_association ~ union_density_dummy + fragmentation + 
+    confederation + legal_mobilization + strikes + exports_products + 
+    temporary_workers + part_time_workers + subcontracts_workers + 
+    female_employees + company_size + economic_industry, family = binomial, 
+    data = subset2)
+
+Coefficients:
+                                                                                            Estimate
+(Intercept)                                                                                 -1.51392
+union_density_dummy                                                                          0.11403
+fragmentation                                                                                0.39409
+confederation                                                                               -0.05734
+legal_mobilization                                                                           0.22268
+strikes                                                                                      0.15315
+exports_products                                                                             0.39573
+temporary_workers                                                                            0.69176
+part_time_workers                                                                            0.07311
+subcontracts_workers                                                                         0.32700
+female_employees                                                                             0.00147
+company_size                                                                                 0.12244
+economic_industryMinería                                                                    -0.86693
+economic_industryIndustria manufacturera                                                    -0.08170
+economic_industrySuministro de electricidad, gas y agua; Gestión de desechos                 0.07235
+economic_industryConstrucción                                                               -0.17827
+economic_industryComercio                                                                    0.26087
+economic_industryTransporte, almacenamiento, información y comunicaciones                   -0.88790
+economic_industryAlojamiento y servicio de comidas                                          -0.93020
+economic_industryActividades financieras y de seguros; Actividades inmobiliarias            -0.37966
+economic_industryActividades profesionales y técnicas; Servicios administrativos y de apoyo -0.99924
+economic_industryEnseñanza                                                                  -1.45434
+economic_industrySalud y asistencia social                                                  -1.29954
+economic_industryActividades artísticas y recreativas; Otros servicios                      -1.52605
+                                                                                            Std. Error
+(Intercept)                                                                                    0.54316
+union_density_dummy                                                                            0.04901
+fragmentation                                                                                  0.19074
+confederation                                                                                  0.15833
+legal_mobilization                                                                             0.18361
+strikes                                                                                        0.21990
+exports_products                                                                               0.25999
+temporary_workers                                                                              0.47062
+part_time_workers                                                                              0.84117
+subcontracts_workers                                                                           0.16174
+female_employees                                                                               0.00505
+company_size                                                                                   0.14628
+economic_industryMinería                                                                       0.49523
+economic_industryIndustria manufacturera                                                       0.41849
+economic_industrySuministro de electricidad, gas y agua; Gestión de desechos                   0.46038
+economic_industryConstrucción                                                                  0.52384
+economic_industryComercio                                                                      0.51443
+economic_industryTransporte, almacenamiento, información y comunicaciones                      0.45237
+economic_industryAlojamiento y servicio de comidas                                             0.56478
+economic_industryActividades financieras y de seguros; Actividades inmobiliarias               0.54066
+economic_industryActividades profesionales y técnicas; Servicios administrativos y de apoyo    0.49041
+economic_industryEnseñanza                                                                     0.51151
+economic_industrySalud y asistencia social                                                     0.54667
+economic_industryActividades artísticas y recreativas; Otros servicios                         0.58429
+                                                                                            z value
+(Intercept)                                                                                  -2.787
+union_density_dummy                                                                           2.327
+fragmentation                                                                                 2.066
+confederation                                                                                -0.362
+legal_mobilization                                                                            1.213
+strikes                                                                                       0.696
+exports_products                                                                              1.522
+temporary_workers                                                                             1.470
+part_time_workers                                                                             0.087
+subcontracts_workers                                                                          2.022
+female_employees                                                                              0.291
+company_size                                                                                  0.837
+economic_industryMinería                                                                     -1.751
+economic_industryIndustria manufacturera                                                     -0.195
+economic_industrySuministro de electricidad, gas y agua; Gestión de desechos                  0.157
+economic_industryConstrucción                                                                -0.340
+economic_industryComercio                                                                     0.507
+economic_industryTransporte, almacenamiento, información y comunicaciones                    -1.963
+economic_industryAlojamiento y servicio de comidas                                           -1.647
+economic_industryActividades financieras y de seguros; Actividades inmobiliarias             -0.702
+economic_industryActividades profesionales y técnicas; Servicios administrativos y de apoyo  -2.038
+economic_industryEnseñanza                                                                   -2.843
+economic_industrySalud y asistencia social                                                   -2.377
+economic_industryActividades artísticas y recreativas; Otros servicios                       -2.612
+                                                                                            Pr(&gt;|z|)
+(Intercept)                                                                                  0.00532
+union_density_dummy                                                                          0.01998
+fragmentation                                                                                0.03882
+confederation                                                                                0.71725
+legal_mobilization                                                                           0.22521
+strikes                                                                                      0.48614
+exports_products                                                                             0.12798
+temporary_workers                                                                            0.14159
+part_time_workers                                                                            0.93073
+subcontracts_workers                                                                         0.04320
+female_employees                                                                             0.77089
+company_size                                                                                 0.40260
+economic_industryMinería                                                                     0.08002
+economic_industryIndustria manufacturera                                                     0.84521
+economic_industrySuministro de electricidad, gas y agua; Gestión de desechos                 0.87512
+economic_industryConstrucción                                                                0.73362
+economic_industryComercio                                                                    0.61209
+economic_industryTransporte, almacenamiento, información y comunicaciones                    0.04967
+economic_industryAlojamiento y servicio de comidas                                           0.09956
+economic_industryActividades financieras y de seguros; Actividades inmobiliarias             0.48254
+economic_industryActividades profesionales y técnicas; Servicios administrativos y de apoyo  0.04160
+economic_industryEnseñanza                                                                   0.00447
+economic_industrySalud y asistencia social                                                   0.01745
+economic_industryActividades artísticas y recreativas; Otros servicios                       0.00901
+                                                                                              
+(Intercept)                                                                                 **
+union_density_dummy                                                                         * 
+fragmentation                                                                               * 
+confederation                                                                                 
+legal_mobilization                                                                            
+strikes                                                                                       
+exports_products                                                                              
+temporary_workers                                                                             
+part_time_workers                                                                             
+subcontracts_workers                                                                        * 
+female_employees                                                                              
+company_size                                                                                  
+economic_industryMinería                                                                    . 
+economic_industryIndustria manufacturera                                                      
+economic_industrySuministro de electricidad, gas y agua; Gestión de desechos                  
+economic_industryConstrucción                                                                 
+economic_industryComercio                                                                     
+economic_industryTransporte, almacenamiento, información y comunicaciones                   * 
+economic_industryAlojamiento y servicio de comidas                                          . 
+economic_industryActividades financieras y de seguros; Actividades inmobiliarias              
+economic_industryActividades profesionales y técnicas; Servicios administrativos y de apoyo * 
+economic_industryEnseñanza                                                                  **
+economic_industrySalud y asistencia social                                                  * 
+economic_industryActividades artísticas y recreativas; Otros servicios                      **
+---
+Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1
+
+(Dispersion parameter for binomial family taken to be 1)
+
+    Null deviance: 1142.9  on 830  degrees of freedom
+Residual deviance: 1031.7  on 807  degrees of freedom
+AIC: 1079.7
+
+Number of Fisher Scoring iterations: 4</code></pre>
+</div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb8"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb8-1"><a href="#cb8-1" aria-hidden="true" tabindex="-1"></a>model3 <span class="ot">&lt;-</span> <span class="fu">glm</span>(employer_association <span class="sc">~</span> union_density_dummy <span class="sc">+</span> collective_bargaining_coverage <span class="sc">+</span> fragmentation <span class="sc">+</span> legal_mobilization <span class="sc">+</span> strikes <span class="sc">+</span> exports_products <span class="sc">+</span> temporary_workers <span class="sc">+</span> part_time_workers <span class="sc">+</span> subcontracts_workers <span class="sc">+</span> female_employees <span class="sc">+</span> company_size <span class="sc">+</span> economic_industry, <span class="at">data=</span>subset3, <span class="at">family=</span>binomial)</span>
+<span id="cb8-2"><a href="#cb8-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb8-3"><a href="#cb8-3" aria-hidden="true" tabindex="-1"></a><span class="fu">summary</span>(model3)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>
+Call:
+glm(formula = employer_association ~ union_density_dummy + collective_bargaining_coverage + 
+    fragmentation + legal_mobilization + strikes + exports_products + 
+    temporary_workers + part_time_workers + subcontracts_workers + 
+    female_employees + company_size + economic_industry, family = binomial, 
+    data = subset3)
+
+Coefficients:
+                                                                                             Estimate
+(Intercept)                                                                                 -0.698611
+union_density_dummy                                                                          0.008888
+collective_bargaining_coverage                                                               0.055977
+fragmentation                                                                                0.437159
+legal_mobilization                                                                           0.196611
+strikes                                                                                      0.336609
+exports_products                                                                             0.262757
+temporary_workers                                                                            0.525426
+part_time_workers                                                                           -0.215826
+subcontracts_workers                                                                         0.646233
+female_employees                                                                             0.002260
+company_size                                                                                -0.063634
+economic_industryMinería                                                                    -0.893111
+economic_industryIndustria manufacturera                                                    -0.590372
+economic_industrySuministro de electricidad, gas y agua; Gestión de desechos                -0.165015
+economic_industryConstrucción                                                               -0.467673
+economic_industryComercio                                                                   -0.425568
+economic_industryTransporte, almacenamiento, información y comunicaciones                   -1.226577
+economic_industryAlojamiento y servicio de comidas                                          -1.744724
+economic_industryActividades financieras y de seguros; Actividades inmobiliarias            -0.710003
+economic_industryActividades profesionales y técnicas; Servicios administrativos y de apoyo -1.069305
+economic_industryEnseñanza                                                                  -1.890774
+economic_industrySalud y asistencia social                                                  -1.614131
+economic_industryActividades artísticas y recreativas; Otros servicios                      -1.463333
+                                                                                            Std. Error
+(Intercept)                                                                                   0.712776
+union_density_dummy                                                                           0.064632
+collective_bargaining_coverage                                                                0.051572
+fragmentation                                                                                 0.227774
+legal_mobilization                                                                            0.237964
+strikes                                                                                       0.276277
+exports_products                                                                              0.303952
+temporary_workers                                                                             0.674790
+part_time_workers                                                                             0.988510
+subcontracts_workers                                                                          0.215428
+female_employees                                                                              0.006828
+company_size                                                                                  0.206535
+economic_industryMinería                                                                      0.649311
+economic_industryIndustria manufacturera                                                      0.560553
+economic_industrySuministro de electricidad, gas y agua; Gestión de desechos                  0.616035
+economic_industryConstrucción                                                                 0.710324
+economic_industryComercio                                                                     0.671239
+economic_industryTransporte, almacenamiento, información y comunicaciones                     0.614540
+economic_industryAlojamiento y servicio de comidas                                            0.782917
+economic_industryActividades financieras y de seguros; Actividades inmobiliarias              0.723644
+economic_industryActividades profesionales y técnicas; Servicios administrativos y de apoyo   0.662619
+economic_industryEnseñanza                                                                    0.681676
+economic_industrySalud y asistencia social                                                    0.724482
+economic_industryActividades artísticas y recreativas; Otros servicios                        0.893640
+                                                                                            z value
+(Intercept)                                                                                  -0.980
+union_density_dummy                                                                           0.138
+collective_bargaining_coverage                                                                1.085
+fragmentation                                                                                 1.919
+legal_mobilization                                                                            0.826
+strikes                                                                                       1.218
+exports_products                                                                              0.864
+temporary_workers                                                                             0.779
+part_time_workers                                                                            -0.218
+subcontracts_workers                                                                          3.000
+female_employees                                                                              0.331
+company_size                                                                                 -0.308
+economic_industryMinería                                                                     -1.375
+economic_industryIndustria manufacturera                                                     -1.053
+economic_industrySuministro de electricidad, gas y agua; Gestión de desechos                 -0.268
+economic_industryConstrucción                                                                -0.658
+economic_industryComercio                                                                    -0.634
+economic_industryTransporte, almacenamiento, información y comunicaciones                    -1.996
+economic_industryAlojamiento y servicio de comidas                                           -2.228
+economic_industryActividades financieras y de seguros; Actividades inmobiliarias             -0.981
+economic_industryActividades profesionales y técnicas; Servicios administrativos y de apoyo  -1.614
+economic_industryEnseñanza                                                                   -2.774
+economic_industrySalud y asistencia social                                                   -2.228
+economic_industryActividades artísticas y recreativas; Otros servicios                       -1.637
+                                                                                            Pr(&gt;|z|)
+(Intercept)                                                                                  0.32702
+union_density_dummy                                                                          0.89062
+collective_bargaining_coverage                                                               0.27773
+fragmentation                                                                                0.05495
+legal_mobilization                                                                           0.40868
+strikes                                                                                      0.22308
+exports_products                                                                             0.38733
+temporary_workers                                                                            0.43618
+part_time_workers                                                                            0.82717
+subcontracts_workers                                                                         0.00270
+female_employees                                                                             0.74068
+company_size                                                                                 0.75800
+economic_industryMinería                                                                     0.16898
+economic_industryIndustria manufacturera                                                     0.29225
+economic_industrySuministro de electricidad, gas y agua; Gestión de desechos                 0.78880
+economic_industryConstrucción                                                                0.51028
+economic_industryComercio                                                                    0.52608
+economic_industryTransporte, almacenamiento, información y comunicaciones                    0.04594
+economic_industryAlojamiento y servicio de comidas                                           0.02585
+economic_industryActividades financieras y de seguros; Actividades inmobiliarias             0.32652
+economic_industryActividades profesionales y técnicas; Servicios administrativos y de apoyo  0.10658
+economic_industryEnseñanza                                                                   0.00554
+economic_industrySalud y asistencia social                                                   0.02588
+economic_industryActividades artísticas y recreativas; Otros servicios                       0.10153
+                                                                                              
+(Intercept)                                                                                   
+union_density_dummy                                                                           
+collective_bargaining_coverage                                                                
+fragmentation                                                                               . 
+legal_mobilization                                                                            
+strikes                                                                                       
+exports_products                                                                              
+temporary_workers                                                                             
+part_time_workers                                                                             
+subcontracts_workers                                                                        **
+female_employees                                                                              
+company_size                                                                                  
+economic_industryMinería                                                                      
+economic_industryIndustria manufacturera                                                      
+economic_industrySuministro de electricidad, gas y agua; Gestión de desechos                  
+economic_industryConstrucción                                                                 
+economic_industryComercio                                                                     
+economic_industryTransporte, almacenamiento, información y comunicaciones                   * 
+economic_industryAlojamiento y servicio de comidas                                          * 
+economic_industryActividades financieras y de seguros; Actividades inmobiliarias              
+economic_industryActividades profesionales y técnicas; Servicios administrativos y de apoyo   
+economic_industryEnseñanza                                                                  **
+economic_industrySalud y asistencia social                                                  * 
+economic_industryActividades artísticas y recreativas; Otros servicios                        
+---
+Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1
+
+(Dispersion parameter for binomial family taken to be 1)
+
+    Null deviance: 720.10  on 519  degrees of freedom
+Residual deviance: 644.66  on 496  degrees of freedom
+AIC: 692.66
+
+Number of Fisher Scoring iterations: 4</code></pre>
+</div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb10"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb10-1"><a href="#cb10-1" aria-hidden="true" tabindex="-1"></a><span class="co"># model1 es el que mejor funciona</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</div>
+</section>
+
+</main>
+<!-- /main column -->
+<script id="quarto-html-after-body" type="application/javascript">
+  window.document.addEventListener("DOMContentLoaded", function (event) {
+    const icon = "";
+    const anchorJS = new window.AnchorJS();
+    anchorJS.options = {
+      placement: 'right',
+      icon: icon
+    };
+    anchorJS.add('.anchored');
+    const isCodeAnnotation = (el) => {
+      for (const clz of el.classList) {
+        if (clz.startsWith('code-annotation-')) {                     
+          return true;
+        }
+      }
+      return false;
+    }
+    const onCopySuccess = function(e) {
+      // button target
+      const button = e.trigger;
+      // don't keep focus
+      button.blur();
+      // flash "checked"
+      button.classList.add('code-copy-button-checked');
+      var currentTitle = button.getAttribute("title");
+      button.setAttribute("title", "Copied!");
+      let tooltip;
+      if (window.bootstrap) {
+        button.setAttribute("data-bs-toggle", "tooltip");
+        button.setAttribute("data-bs-placement", "left");
+        button.setAttribute("data-bs-title", "Copied!");
+        tooltip = new bootstrap.Tooltip(button, 
+          { trigger: "manual", 
+            customClass: "code-copy-button-tooltip",
+            offset: [0, -8]});
+        tooltip.show();    
+      }
+      setTimeout(function() {
+        if (tooltip) {
+          tooltip.hide();
+          button.removeAttribute("data-bs-title");
+          button.removeAttribute("data-bs-toggle");
+          button.removeAttribute("data-bs-placement");
+        }
+        button.setAttribute("title", currentTitle);
+        button.classList.remove('code-copy-button-checked');
+      }, 1000);
+      // clear code selection
+      e.clearSelection();
+    }
+    const getTextToCopy = function(trigger) {
+      const outerScaffold = trigger.parentElement.cloneNode(true);
+      const codeEl = outerScaffold.querySelector('code');
+      for (const childEl of codeEl.children) {
+        if (isCodeAnnotation(childEl)) {
+          childEl.remove();
+        }
+      }
+      return codeEl.innerText;
+    }
+    const clipboard = new window.ClipboardJS('.code-copy-button:not([data-in-quarto-modal])', {
+      text: getTextToCopy
+    });
+    clipboard.on('success', onCopySuccess);
+    if (window.document.getElementById('quarto-embedded-source-code-modal')) {
+      const clipboardModal = new window.ClipboardJS('.code-copy-button[data-in-quarto-modal]', {
+        text: getTextToCopy,
+        container: window.document.getElementById('quarto-embedded-source-code-modal')
+      });
+      clipboardModal.on('success', onCopySuccess);
+    }
+      var localhostRegex = new RegExp(/^(?:http|https):\/\/localhost\:?[0-9]*\//);
+      var mailtoRegex = new RegExp(/^mailto:/);
+        var filterRegex = new RegExp('/' + window.location.host + '/');
+      var isInternal = (href) => {
+          return filterRegex.test(href) || localhostRegex.test(href) || mailtoRegex.test(href);
+      }
+      // Inspect non-navigation links and adorn them if external
+     var links = window.document.querySelectorAll('a[href]:not(.nav-link):not(.navbar-brand):not(.toc-action):not(.sidebar-link):not(.sidebar-item-toggle):not(.pagination-link):not(.no-external):not([aria-hidden]):not(.dropdown-item):not(.quarto-navigation-tool):not(.about-link)');
+      for (var i=0; i<links.length; i++) {
+        const link = links[i];
+        if (!isInternal(link.href)) {
+          // undo the damage that might have been done by quarto-nav.js in the case of
+          // links that we want to consider external
+          if (link.dataset.originalHref !== undefined) {
+            link.href = link.dataset.originalHref;
+          }
+        }
+      }
+    function tippyHover(el, contentFn, onTriggerFn, onUntriggerFn) {
+      const config = {
+        allowHTML: true,
+        maxWidth: 500,
+        delay: 100,
+        arrow: false,
+        appendTo: function(el) {
+            return el.parentElement;
+        },
+        interactive: true,
+        interactiveBorder: 10,
+        theme: 'quarto',
+        placement: 'bottom-start',
+      };
+      if (contentFn) {
+        config.content = contentFn;
+      }
+      if (onTriggerFn) {
+        config.onTrigger = onTriggerFn;
+      }
+      if (onUntriggerFn) {
+        config.onUntrigger = onUntriggerFn;
+      }
+      window.tippy(el, config); 
+    }
+    const noterefs = window.document.querySelectorAll('a[role="doc-noteref"]');
+    for (var i=0; i<noterefs.length; i++) {
+      const ref = noterefs[i];
+      tippyHover(ref, function() {
+        // use id or data attribute instead here
+        let href = ref.getAttribute('data-footnote-href') || ref.getAttribute('href');
+        try { href = new URL(href).hash; } catch {}
+        const id = href.replace(/^#\/?/, "");
+        const note = window.document.getElementById(id);
+        if (note) {
+          return note.innerHTML;
+        } else {
+          return "";
+        }
+      });
+    }
+    const xrefs = window.document.querySelectorAll('a.quarto-xref');
+    const processXRef = (id, note) => {
+      // Strip column container classes
+      const stripColumnClz = (el) => {
+        el.classList.remove("page-full", "page-columns");
+        if (el.children) {
+          for (const child of el.children) {
+            stripColumnClz(child);
+          }
+        }
+      }
+      stripColumnClz(note)
+      if (id === null || id.startsWith('sec-')) {
+        // Special case sections, only their first couple elements
+        const container = document.createElement("div");
+        if (note.children && note.children.length > 2) {
+          container.appendChild(note.children[0].cloneNode(true));
+          for (let i = 1; i < note.children.length; i++) {
+            const child = note.children[i];
+            if (child.tagName === "P" && child.innerText === "") {
+              continue;
+            } else {
+              container.appendChild(child.cloneNode(true));
+              break;
+            }
+          }
+          if (window.Quarto?.typesetMath) {
+            window.Quarto.typesetMath(container);
+          }
+          return container.innerHTML
+        } else {
+          if (window.Quarto?.typesetMath) {
+            window.Quarto.typesetMath(note);
+          }
+          return note.innerHTML;
+        }
+      } else {
+        // Remove any anchor links if they are present
+        const anchorLink = note.querySelector('a.anchorjs-link');
+        if (anchorLink) {
+          anchorLink.remove();
+        }
+        if (window.Quarto?.typesetMath) {
+          window.Quarto.typesetMath(note);
+        }
+        if (note.classList.contains("callout")) {
+          return note.outerHTML;
+        } else {
+          return note.innerHTML;
+        }
+      }
+    }
+    for (var i=0; i<xrefs.length; i++) {
+      const xref = xrefs[i];
+      tippyHover(xref, undefined, function(instance) {
+        instance.disable();
+        let url = xref.getAttribute('href');
+        let hash = undefined; 
+        if (url.startsWith('#')) {
+          hash = url;
+        } else {
+          try { hash = new URL(url).hash; } catch {}
+        }
+        if (hash) {
+          const id = hash.replace(/^#\/?/, "");
+          const note = window.document.getElementById(id);
+          if (note !== null) {
+            try {
+              const html = processXRef(id, note.cloneNode(true));
+              instance.setContent(html);
+            } finally {
+              instance.enable();
+              instance.show();
+            }
+          } else {
+            // See if we can fetch this
+            fetch(url.split('#')[0])
+            .then(res => res.text())
+            .then(html => {
+              const parser = new DOMParser();
+              const htmlDoc = parser.parseFromString(html, "text/html");
+              const note = htmlDoc.getElementById(id);
+              if (note !== null) {
+                const html = processXRef(id, note);
+                instance.setContent(html);
+              } 
+            }).finally(() => {
+              instance.enable();
+              instance.show();
+            });
+          }
+        } else {
+          // See if we can fetch a full url (with no hash to target)
+          // This is a special case and we should probably do some content thinning / targeting
+          fetch(url)
+          .then(res => res.text())
+          .then(html => {
+            const parser = new DOMParser();
+            const htmlDoc = parser.parseFromString(html, "text/html");
+            const note = htmlDoc.querySelector('main.content');
+            if (note !== null) {
+              // This should only happen for chapter cross references
+              // (since there is no id in the URL)
+              // remove the first header
+              if (note.children.length > 0 && note.children[0].tagName === "HEADER") {
+                note.children[0].remove();
+              }
+              const html = processXRef(null, note);
+              instance.setContent(html);
+            } 
+          }).finally(() => {
+            instance.enable();
+            instance.show();
+          });
+        }
+      }, function(instance) {
+      });
+    }
+        let selectedAnnoteEl;
+        const selectorForAnnotation = ( cell, annotation) => {
+          let cellAttr = 'data-code-cell="' + cell + '"';
+          let lineAttr = 'data-code-annotation="' +  annotation + '"';
+          const selector = 'span[' + cellAttr + '][' + lineAttr + ']';
+          return selector;
+        }
+        const selectCodeLines = (annoteEl) => {
+          const doc = window.document;
+          const targetCell = annoteEl.getAttribute("data-target-cell");
+          const targetAnnotation = annoteEl.getAttribute("data-target-annotation");
+          const annoteSpan = window.document.querySelector(selectorForAnnotation(targetCell, targetAnnotation));
+          const lines = annoteSpan.getAttribute("data-code-lines").split(",");
+          const lineIds = lines.map((line) => {
+            return targetCell + "-" + line;
+          })
+          let top = null;
+          let height = null;
+          let parent = null;
+          if (lineIds.length > 0) {
+              //compute the position of the single el (top and bottom and make a div)
+              const el = window.document.getElementById(lineIds[0]);
+              top = el.offsetTop;
+              height = el.offsetHeight;
+              parent = el.parentElement.parentElement;
+            if (lineIds.length > 1) {
+              const lastEl = window.document.getElementById(lineIds[lineIds.length - 1]);
+              const bottom = lastEl.offsetTop + lastEl.offsetHeight;
+              height = bottom - top;
+            }
+            if (top !== null && height !== null && parent !== null) {
+              // cook up a div (if necessary) and position it 
+              let div = window.document.getElementById("code-annotation-line-highlight");
+              if (div === null) {
+                div = window.document.createElement("div");
+                div.setAttribute("id", "code-annotation-line-highlight");
+                div.style.position = 'absolute';
+                parent.appendChild(div);
+              }
+              div.style.top = top - 2 + "px";
+              div.style.height = height + 4 + "px";
+              div.style.left = 0;
+              let gutterDiv = window.document.getElementById("code-annotation-line-highlight-gutter");
+              if (gutterDiv === null) {
+                gutterDiv = window.document.createElement("div");
+                gutterDiv.setAttribute("id", "code-annotation-line-highlight-gutter");
+                gutterDiv.style.position = 'absolute';
+                const codeCell = window.document.getElementById(targetCell);
+                const gutter = codeCell.querySelector('.code-annotation-gutter');
+                gutter.appendChild(gutterDiv);
+              }
+              gutterDiv.style.top = top - 2 + "px";
+              gutterDiv.style.height = height + 4 + "px";
+            }
+            selectedAnnoteEl = annoteEl;
+          }
+        };
+        const unselectCodeLines = () => {
+          const elementsIds = ["code-annotation-line-highlight", "code-annotation-line-highlight-gutter"];
+          elementsIds.forEach((elId) => {
+            const div = window.document.getElementById(elId);
+            if (div) {
+              div.remove();
+            }
+          });
+          selectedAnnoteEl = undefined;
+        };
+          // Handle positioning of the toggle
+      window.addEventListener(
+        "resize",
+        throttle(() => {
+          elRect = undefined;
+          if (selectedAnnoteEl) {
+            selectCodeLines(selectedAnnoteEl);
+          }
+        }, 10)
+      );
+      function throttle(fn, ms) {
+      let throttle = false;
+      let timer;
+        return (...args) => {
+          if(!throttle) { // first call gets through
+              fn.apply(this, args);
+              throttle = true;
+          } else { // all the others get throttled
+              if(timer) clearTimeout(timer); // cancel #2
+              timer = setTimeout(() => {
+                fn.apply(this, args);
+                timer = throttle = false;
+              }, ms);
+          }
+        };
+      }
+        // Attach click handler to the DT
+        const annoteDls = window.document.querySelectorAll('dt[data-target-cell]');
+        for (const annoteDlNode of annoteDls) {
+          annoteDlNode.addEventListener('click', (event) => {
+            const clickedEl = event.target;
+            if (clickedEl !== selectedAnnoteEl) {
+              unselectCodeLines();
+              const activeEl = window.document.querySelector('dt[data-target-cell].code-annotation-active');
+              if (activeEl) {
+                activeEl.classList.remove('code-annotation-active');
+              }
+              selectCodeLines(clickedEl);
+              clickedEl.classList.add('code-annotation-active');
+            } else {
+              // Unselect the line
+              unselectCodeLines();
+              clickedEl.classList.remove('code-annotation-active');
+            }
+          });
+        }
+    const findCites = (el) => {
+      const parentEl = el.parentElement;
+      if (parentEl) {
+        const cites = parentEl.dataset.cites;
+        if (cites) {
+          return {
+            el,
+            cites: cites.split(' ')
+          };
+        } else {
+          return findCites(el.parentElement)
+        }
+      } else {
+        return undefined;
+      }
+    };
+    var bibliorefs = window.document.querySelectorAll('a[role="doc-biblioref"]');
+    for (var i=0; i<bibliorefs.length; i++) {
+      const ref = bibliorefs[i];
+      const citeInfo = findCites(ref);
+      if (citeInfo) {
+        tippyHover(citeInfo.el, function() {
+          var popup = window.document.createElement('div');
+          citeInfo.cites.forEach(function(cite) {
+            var citeDiv = window.document.createElement('div');
+            citeDiv.classList.add('hanging-indent');
+            citeDiv.classList.add('csl-entry');
+            var biblioDiv = window.document.getElementById('ref-' + cite);
+            if (biblioDiv) {
+              citeDiv.innerHTML = biblioDiv.innerHTML;
+            }
+            popup.appendChild(citeDiv);
+          });
+          return popup.innerHTML;
+        });
+      }
+    }
+  });
+  </script>
+</div> <!-- /content -->
+
+
+
+
+</body></html>

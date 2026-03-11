@@ -1,6 +1,6 @@
 "0","proc <- proc %>% select(employer_association,"
 "0","                        "
-"0","                        union, union_density, union_density_dummy, fragmentation, collective_bargaining_coverage, confederation, "
+"0","                        union, union_density, union_density_cat, fragmentation, collective_bargaining_coverage, confederation, "
 "0","                        legal_mobilization, strikes, "
 "0","                        "
 "0","                        economic_industry, company_size, temporary_workers, part_time_workers, managers_workforce,"

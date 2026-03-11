@@ -14,6 +14,7 @@ Procesamiento
 # 1. Cargar librerías
 
 ```{r}
+rm(list = ls())
 library(pacman)
 pacman::p_load(tidyverse, sjmisc, dplyr, haven, summarytools, car, magrittr,ggplot2)
 
@@ -79,7 +80,7 @@ proc <- proc %>%
                                   TRUE ~ union_density),
          union_density = case_when(union == 0 ~ 0,
                                    TRUE ~ union_density),
-         union_density_dummy = case_when(union_density == 0 ~ 0,
+         union_density_cat = case_when(union_density == 0 ~ 0,
                                          union_density > 0 & union_density <= 15 ~ 1,
                                          union_density > 15 & union_density <= 30 ~ 2,
                                          union_density > 30 & union_density <= 45 ~ 3,
@@ -88,7 +89,7 @@ proc <- proc %>%
                                          union_density > 75 & union_density <= 85 ~ 6,
                                          union_density > 85 ~ 7,
                                          TRUE ~ NA_real_),
-         fragmentation = k2,
+         fragmentation = k2, # 96 a NA y pasar a factor
          across(starts_with("m3_"), ~ case_when(.x == 96 ~ NA_real_,
                                                TRUE ~ .x)),
          collective_bargaining_coverage = m3_1_1 + m3_2_1 + m3_1_2 + m3_2_2,
@@ -115,14 +116,14 @@ proc <- proc %>%
                                                  "Enseñanza",
                                                  "Salud y asistencia social",
                                                  "Actividades artísticas y recreativas; Otros servicios")),
-         company_size = case_when(b1_3_7 <= 49 ~ 1,
+         company_size = case_when(b1_3_7 <= 49 ~ 1, #pasar a factor
                                   b1_3_7 >= 50 & b1_3_7 <= 199 ~ 2,
                                   b1_3_7 >= 200 ~ 3,
                                   TRUE ~ NA),
          temporary_workers = case_when(b1_3_7 == 0 ~ NA,
-                                       TRUE ~ ((b1_3_2 + b1_3_3 + b1_3_4)/b1_3_7)),
+                                       TRUE ~ ((b1_3_2 + b1_3_3 + b1_3_4)/b1_3_7)*100),
          part_time_workers = case_when(b1_3_7 == 0 ~ NA,
-                                       TRUE ~ ((f1_3_3 + f1_3_4)/b1_3_7)),
+                                       TRUE ~ ((f1_3_3 + f1_3_4)/b1_3_7)*100),
          managers_workforce = case_when(b1_3_7 == 0 ~ NA,
                                        TRUE ~ ((a4_3_1 + a4_3_2)/b1_3_7)*100),
          female_employees = case_when(b1_3_7 == 0 ~ NA_real_,
@@ -155,7 +156,7 @@ frq(proc$union)
 
 summary(proc$union_density)
 
-frq(proc$union_density_dummy)
+frq(proc$union_density_cat)
 
 frq(proc$fragmentation)
 
@@ -173,13 +174,13 @@ frq(proc$economic_industry)
 
 frq(proc$company_size)
 
-summary(proc$temporary_workers)
+frq(proc$temporary_workers)
 
-summary(proc$part_time_workers)
+frq(proc$part_time_workers)
 
-summary(proc$managers_workforce)
+descr(proc$managers_workforce)
 
-summary(proc$female_employees)
+descr(proc$female_employees)
 
 frq(proc$exports_products)
 
@@ -195,7 +196,7 @@ frq(proc$subcontractor_company)
 ```{r}
 proc <- proc %>% select(employer_association,
                         
-                        union, union_density, union_density_dummy, fragmentation, collective_bargaining_coverage, confederation, 
+                        union, union_density, union_density_cat, fragmentation, collective_bargaining_coverage, confederation, 
                         legal_mobilization, strikes, 
                         
                         economic_industry, company_size, temporary_workers, part_time_workers, managers_workforce,
