@@ -1,0 +1,72 @@
+rm(list=ls())
+
+# Cargar paquetes ---------------------------------------------------------
+
+library(pacman)
+pacman::p_load(tidyverse, sjmisc, dplyr, haven, car, magrittr, readxl)
+
+# Abrir BBDD --------------------------------------------------------------
+
+data<- read_xlsx("Input/OHL.xlsx",
+                 range = NULL,
+                 col_names = TRUE,
+                 col_types = "text",
+                 na = "")
+
+# -------------------------- PROCESAMIENTO --------------------------------
+
+# Filtros -----------------------------------------------------------------
+
+data <- data %>% filter(yr == 2023) %>% mutate_all(as.numeric) %>% 
+  
+  # Crear/transformar -------------------------------------------------------
+
+  dplyr::mutate(diasperd = duracion * tc)
+
+data$ramas <- car::recode(data$ohl_ramas, recodes = c("1=1; 2=1; 3=1; 4=1; 5=1; 
+                                                          6=1; 7=2; 8=3; 9=4; 10=6; 
+                                                          11=7; 12=9; 13=8; 14=10; 
+                                                          15=11; 16=12; 17=13; 18=14; 
+                                                          19=15; 20=16; 21=17; 22=18; 
+                                                          23=19"))
+
+data$ramas <- factor(data$ramas, 
+                     levels = 1:21, 
+                     labels = c("Agriculture, forestry and fishing",
+                                "Mining and quarrying",
+                                "Manufacturing",
+                                "Electricity, gas, steam and air conditioning supply",
+                                "Water supply; sewerage, waste management and remediation activities",
+                                "Construction",
+                                "Wholesale and retail trade; repair of motor vehicles and motorcycles",
+                                "Transportation and storage",
+                                "Accommodation and food service activities",
+                                "Information and communication",
+                                "Financial and insurance activities",
+                                "Real estate activities",
+                                "Professional, scientific and technical activities",
+                                "Administrative and support service activities",
+                                "Public administration and defence; compulsory social security",
+                                "Education",
+                                "Human health and social work activities",
+                                "Arts, entertainment and recreation",
+                                "Other service activities",
+                                "Activities of households as employers",
+                                "Activities of extraterritorial organizations and bodies"))
+
+data <- data %>%
+  mutate(sindform = ifelse(org %in% c(1:8, 11), 1, 0)) %>% 
+  mutate(demproc = ifelse(dem1 %in% 1, 1, 0)) %>% 
+  mutate(instproc = case_when(inst > 2~ 1, 
+                              inst <= 2 ~ 2, 
+                              TRUE ~ NA_real_)) %>% 
+  mutate(tcgroup = case_when(tc > 99 ~2, 
+                             tc < 100 ~ 1, 
+                             TRUE ~NA_real_)) %>% 
+  mutate(diasgroup = case_when(duracion < 5 ~ 1,
+                               duracion > 4 ~ 2,
+                               TRUE ~NA_real_))
+
+# Exportar datos ----------------------------------------------------------
+
+saveRDS(data, file = "output/procdata.rds")

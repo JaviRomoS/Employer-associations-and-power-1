@@ -1,0 +1,1 @@
+{"frames":[],"message":"Error en encla %>% group_by(estrato) %>% mutate(pob = sum(fe)) %>% ungroup() <- encla: \n  no se pudo encontrar la función \"%>%<-\"\n"}

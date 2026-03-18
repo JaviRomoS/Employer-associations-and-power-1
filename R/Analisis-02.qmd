@@ -1,0 +1,62 @@
+---
+title: "Analisis 02"
+author: Javiera Romo Sanchez
+format: html
+editor: source
+execute:
+  echo: true
+  warning: false
+  message: false
+---
+
+Codigo para estimar indicadores por rama de actividad economica, usando la base de la ENCLA y del OHL
+
+## Cargar librerias
+
+```{r}
+rm(list = ls())
+
+library(pacman)
+pacman::p_load(tidyverse, dplyr, haven, sjmisc, sjPlot, summarytools, survey, readxl)
+```
+
+## Abrir bases de datos
+
+```{r}
+encla <- readRDS("../output/subset1.rds")
+ohl <- readxl::read_excel("../input/base_OHL.xlsx", col_types = "text")
+
+```
+
+## Crear objeto encuesta
+
+```{r}
+# Crear variable pob
+encla <- encla %>% 
+  group_by(estrato) %>% 
+  mutate(pob = sum(fe)) %>%  
+  ungroup()
+
+# Objeto encuesta  
+diseno_aut <- survey::svydesign(  
+  ids = ~id, 
+   strata = ~estrato,
+   weights = ~fe, 
+   fpc = ~pob, 
+   data = encla)
+```
+
+## Densidad sindical por Rama
+
+```{r}
+
+encla %>%
+  group_by(economic_industry) %>%
+  summarise(union_density_sector = (sum(k3_3, na.rm = TRUE) / sum(b1_3_7, na.rm = TRUE))*100) %>% View()
+
+```
+
+
+
+
+

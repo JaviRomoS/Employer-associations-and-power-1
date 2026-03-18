@@ -209,7 +209,9 @@ proc <- proc %>% select(id,fe,estrato,
                         legal_mobilization, strikes, 
                         
                         economic_industry, company_size, temporary_workers, part_time_workers, managers_workforce,
-                        female_employees, exports_products, subcontracts_workers, subcontractor_company)
+                        female_employees, exports_products, subcontracts_workers, subcontractor_company,
+                        
+                        k3_3,b1_3_7)
 ```
 
 # 8. Crear subset
@@ -217,7 +219,7 @@ proc <- proc %>% select(id,fe,estrato,
 ```{r}
 
 subset1 <- proc %>% 
-  select(id,fe,estrato,employer_association,union, union_density, union_density_cat, fragmentation,  collective_bargaining_coverage, confederation, legal_mobilization, strikes, economic_industry, company_size, temporary_workers, part_time_workers, managers_workforce,female_employees, exports_products, subcontracts_workers, subcontractor_company) %>% 
+  select(id,fe,estrato,employer_association,union, union_density, union_density_cat, fragmentation,  collective_bargaining_coverage, confederation, legal_mobilization, strikes, economic_industry, company_size, temporary_workers, part_time_workers, managers_workforce,female_employees, exports_products, subcontracts_workers, subcontractor_company, k3_3,b1_3_7) %>% 
   filter(if_all(c(employer_association,union, union_density, union_density_cat, fragmentation, legal_mobilization, strikes, economic_industry, company_size, temporary_workers, part_time_workers, managers_workforce,female_employees, exports_products, subcontracts_workers, subcontractor_company), ~ !is.na(.)))
 ```
 

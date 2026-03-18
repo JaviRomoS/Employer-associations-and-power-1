@@ -1,0 +1,9 @@
+"0","# Crear variable pob
+encla -> encla %>% 
+  group_by(estrato) %>% 
+  mutate(pob = sum(fe)) %>%  
+  ungroup()
+"
+"2","Error en encla %>% group_by(estrato) %>% mutate(pob = sum(fe)) %>% ungroup() <- encla: 
+  no se pudo encontrar la función ""%>%<-""
+"

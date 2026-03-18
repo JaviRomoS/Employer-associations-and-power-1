@@ -1,0 +1,4 @@
+"0","rm(list = ls())"
+"0","library(pacman)"
+"0","pacman::p_load(tidyverse, sjmisc, dplyr, haven, summarytools, car, magrittr,ggplot2,openxlsx)"
+"0",""

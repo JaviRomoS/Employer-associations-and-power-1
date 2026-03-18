@@ -22,7 +22,7 @@ pacman::p_load(tidyverse, dplyr, haven, sjmisc, sjPlot, summarytools)
 ## Abrir base de datos
 
 ```{r}
-data <- readRDS("C:/Users/javie/OneDrive/Sociologia/CONCLAT/employer associations and power/Employer-associations-and-power-1/output/proc.rds")
+data <- readRDS("../output/proc.rds")
 ```
 
 ## Seleccionar variables

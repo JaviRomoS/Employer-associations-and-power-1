@@ -1,0 +1,266 @@
+rm(list = ls())
+options(scipen=999)
+
+#Librerías
+
+library(pacman)
+pacman::p_load(tidyverse,readxl,sjPlot,sjmisc,car,dplyr,scales)
+
+# Abrir base de datos
+
+data <- readxl::read_excel("input/base_OHL.xlsx", col_types = "text")
+
+#Limpieza
+
+data90 <- data %>%
+  mutate(across(c(yr, inst, ciuur2, ciuur4), as.numeric)) %>%
+  filter(yr >= 1990) %>%
+  select(yr, inst, ciuur2, ciuur4, ohl_ramas) %>%
+  mutate(ciuur2 = if_else(ciuur2 >= 15, NA_real_, ciuur2)) %>%
+  mutate(
+    sector = case_when(
+      inst %in% c(1, 2, 8) ~ "Private",
+      inst %in% c(3, 41, 42, 43, 5, 6) ~ "Public",
+      TRUE ~ "?"
+    ),
+    
+    rama = case_when(
+      ciuur2 == 1 ~ 1,
+      ciuur2 == 2 ~ 2,
+      ciuur2 == 3 ~ 3,
+      ciuur2 %in% c(4, 5) ~ 4,
+      ciuur2 == 6 ~ 5,
+      ciuur2 == 7 ~ 6,
+      ciuur2 == 8 ~ 7,
+      ciuur2 %in% 9:14 ~ 7,
+      
+      is.na(ciuur2) & ciuur4 == 1 ~ 1,
+      is.na(ciuur2) & ciuur4 == 2 ~ 2,
+      is.na(ciuur2) & ciuur4 == 3 ~ 3,
+      is.na(ciuur2) & ciuur4 %in% 4:6 ~ 4,
+      is.na(ciuur2) & ciuur4 %in% c(7, 9) ~ 5,
+      is.na(ciuur2) & ciuur4 %in% c(8, 10) ~ 6,
+      is.na(ciuur2) & ciuur4 %in% 11:21 ~ 7,
+      
+      TRUE ~ NA_real_
+    ),
+
+    rama_ohl = case_when(
+      ohl_ramas == 1 ~ 1,
+      ohl_ramas == 2 ~ 2,
+      ohl_ramas == 3 ~ 3,
+      ohl_ramas %in% c(4, 5, 6) ~ 4,
+      ohl_ramas %in% c(7, 9) ~ 5,
+      ohl_ramas %in% c(8, 10) ~ 6,
+      ohl_ramas %in% 11:23 ~ 7,
+      TRUE ~ NA_real_
+    ),
+
+    rama = coalesce(rama, rama_ohl)
+  ) %>%
+  mutate(
+    rama = factor(
+      rama,
+      levels = 1:7,
+      labels = c(
+        "Agriculture, livestock, forestry and fishing",
+        "Mining",
+        "Manufacturing industry",
+        "Construction and provision of \nelectricity, gas and water",
+        "Business, hotels and restaurants",
+        "Transportation and communications",
+        "Services (financial, professional, social,\ndomestic, among others)")))
+
+
+data10 <- data %>% filter(yr >= 2010) %>% 
+  select(yr,dem1) %>% 
+  mutate(across(c(yr, dem1), as.numeric)) %>% 
+  mutate(demanda = car::recode(
+    dem1,
+    recodes = "1 = 1; 17 = 1; 18 = 1; 21 = 1;
+        5 = 2; 6 = 2; 8 = 2; 10 = 2; 2 = 2;
+        3 = 3; 4 = 3; 7 = 3;
+        9 = 3; 11 = 3; 12 = 3; 16 = 3; 19 = 3;
+        13 = 4; 14 = 4; 15 = 4; 20 = 4")) %>% 
+  mutate(demanda = factor(demanda,
+                          levels = c(1, 2, 3, 4),
+                          labels = c("Economic demands/ wages",
+                                     "Working conditions",
+                                     "Organization of work",
+                                     "Other causes")))
+
+# Gráficos ----------------------------------------------------------------
+
+# Primer gráfico: Huelgas x sector desde 1990
+
+df_plot1 <- data90 %>%
+  filter(sector %in% c("Public", "Private")) %>%
+  count(yr, sector, name = "n") %>% 
+  group_by(yr) %>% 
+  mutate(pct = n/sum(n) * 100) %>% 
+  ungroup()
+
+plot1 <- ggplot(
+  df_plot1,
+  aes(x = yr, y = n, fill = sector)
+) +
+  geom_col(width = 0.85) +
+  geom_text(
+    aes(label = paste0(round(pct, 1), "%")),
+    position = position_stack(vjust = 0.5),
+    size = 2.5,
+    color = "white"
+  ) +
+  theme_bw() +
+  scale_fill_manual(
+    values = c(
+      "Public" = "grey70",
+      "Private" = "grey45"
+    ),
+    breaks = c("Public", "Private"),
+    labels = c("Public", "Private"),
+    name = "Sector"
+  ) +
+  scale_x_continuous(
+    name = "",
+    breaks = seq(1990, 2023, by = 5)
+  ) +
+  scale_y_continuous(
+    name = "",
+    expand = expansion(mult = c(0, 0.05))
+  ) +
+  theme(
+    axis.text.x = element_text(size = 12),
+    axis.text.y = element_text(size = 12),
+    legend.title = element_blank(),
+    legend.position = "bottom",
+    legend.text = element_text(size = 12)
+  )
+
+# Segundo gráfico: Huelgas por rama
+
+df_plot2 <- data90 %>%
+  count(yr, rama, name = "n")
+
+df_plot2 <- df_plot2 %>%
+  filter(
+    !is.na(yr),
+    !is.na(n),
+    !is.na(rama))
+
+plot2 <- ggplot(
+  df_plot2,
+  aes(
+    x = yr,
+    y = n,
+    group = rama,
+    colour = rama,
+    linetype = rama,
+    shape = rama
+  )) +
+  geom_line(linewidth = 0.6) +
+  geom_point(size = 2) +
+  theme_bw() +
+  scale_color_grey(
+    start = 0.2, end = 0.8,
+    name = "Rama"
+  ) +
+  scale_linetype_manual(
+    values = c("solid", "dashed", "dotted", "dotdash",
+               "longdash", "twodash", "solid"),
+    name = "Rama") +
+  scale_shape_manual(
+    values = c(16, 17, 15, 18, 19, 8, 7),
+    name = "Rama"
+  ) +
+  scale_x_continuous(
+    name = "",
+    breaks = seq(1990, 2023, by = 5)
+  ) +
+  scale_y_continuous(
+    name = "",
+    expand = expansion(mult = c(0, 0.05))
+  ) +
+  theme(
+    axis.text.x = element_text(size=12
+    ),
+    legend.title = element_blank(),
+    legend.position = "bottom",
+    legend.text = element_text(size = 12)
+  ) +
+  guides(
+    colour = guide_legend(
+      nrow = 3,
+      byrow = TRUE,
+      override.aes = list(shape = c(16,17,15,18,19,8,7),
+                                              linetype = c("solid","dashed","dotted","dotdash",
+                                                           "longdash","twodash","solid")))
+    )
+# Tercer gráfico: Barras agrupadas segun tipo de demanda huelga
+
+df_plot3 <- data10 %>%
+  na.omit() %>% 
+  count(yr, demanda, name = "n") %>% 
+  group_by(yr) %>% 
+  mutate(pct = n/sum(n) *100) %>% 
+  ungroup()
+
+plot3 <- ggplot(df_plot3,
+                aes(x = yr,
+                    y = n,
+                    fill = demanda)) +
+  geom_col(width = 0.85) +
+  theme_bw() +
+  scale_fill_grey(start = 0.4, end = 0.75,
+                  breaks = c("Economic demands/ wages",
+                             "Working conditions",
+                             "Organization of work",
+                             "Other causes"),
+                  labels = c("Economic demands/ wages",
+                             "Working conditions",
+                             "Organization of work",
+                             "Other causes"),
+                  name = "Demanda") +
+  scale_x_continuous(
+    name = "",
+    breaks = seq(2010, 2023, by = 2)
+  ) +
+  scale_y_continuous(
+    name = "",
+    expand = expansion(mult = c(0, 0.05))
+  ) +
+  theme(
+    axis.text.x = element_text(
+      size=12),
+    legend.title = element_blank(),
+    legend.position = "bottom",
+    legend.text = element_text(size = 12)) +
+  geom_text(
+    aes(label = ifelse(pct >= 0.4, paste0(round(pct,1), "%"), "")),
+    position = position_stack(vjust = 0.5),
+    size = 2.5,
+    color = "white"
+  ) +
+  guides(
+    fill = guide_legend(
+      nrow = 2,     
+      byrow = TRUE  
+      
+    )
+  )
+
+
+# Save plot
+
+ggsave(plot1, filename = "plots/plot1.png",
+       device = "png",dpi = "retina", units = "cm",
+       width = 32,height = 14)
+
+ggsave(plot2, filename = "plots/plot2.png",
+       device = "png",dpi = "retina", units = "cm",
+       width = 28,height = 15)
+
+ggsave(plot3, filename = "plots/plot3.png",
+       device = "png",dpi = "retina", units = "cm",
+       width = 23,height = 14)
+
