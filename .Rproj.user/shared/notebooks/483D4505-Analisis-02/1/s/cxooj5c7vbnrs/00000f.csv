@@ -1,0 +1,5 @@
+"0","rm(list = ls())"
+"0","options(survey.lonely.psu=""certainty"")"
+"0",""
+"0","library(pacman)"
+"0","pacman::p_load(tidyverse, dplyr, haven, sjmisc, sjPlot, summarytools, survey, readxl, car, writexl, survey)"

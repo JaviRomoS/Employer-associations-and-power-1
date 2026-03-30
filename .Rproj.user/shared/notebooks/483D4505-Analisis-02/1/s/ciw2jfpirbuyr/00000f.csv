@@ -1,0 +1,6 @@
+"0",""
+"0","total_strikes <- ohl %>%"
+"0","  filter(yr >= 2000 & yr <= 2023) %>% "
+"0","  group_by(yr) %>% "
+"0","  count(yr, name = ""n"")"
+"0",""

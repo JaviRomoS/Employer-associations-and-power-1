@@ -1,0 +1,7 @@
+"0",""
+"0","# Calcular n huelgas por rama"
+"0",""
+"0","n_strikes_bysector <- ohl %>%"
+"0","  group_by(ramas13) %>%"
+"0","  count(yr, ramas13, name = ""n"")"
+"0",""

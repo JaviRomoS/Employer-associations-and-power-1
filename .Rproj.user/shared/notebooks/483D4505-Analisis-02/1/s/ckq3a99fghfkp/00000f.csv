@@ -1,0 +1,8 @@
+"0",""
+"0","total_ddpp_bysector <- ohl %>%"
+"0","  filter(yr == 2023) %>% "
+"0","  group_by(ramas13) %>%"
+"0","  summarise(total_ddpp = sum(ddpp, na.rm = TRUE))"
+"0",""
+"0","# ohl %>% filter(yr==2023 & ramas13 == ""Construction"") %>% select(ddpp) %>% View()"
+"0",""

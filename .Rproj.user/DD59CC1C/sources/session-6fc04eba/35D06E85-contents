@@ -1,0 +1,146 @@
+rm(list=ls())
+
+# ---------------------------PROCESAMIENTO --------------------------------
+
+# Cargar librerías --------------------------------------------------------
+
+library(pacman)
+
+pacman::p_load(tidyverse, sjmisc, dplyr, haven, car, magrittr, writexl)
+
+# Abrir bases de datos ----------------------------------------------------
+
+sindtrab <- readRDS("input/syt.rds")
+autoaplicado <- readRDS("input/aut.rds")
+empleadores <- readRDS("input/emp.rds")
+
+# Procesar datos ----------------------------------------------------------
+
+## Ordenar ID -------------------------------------------------------------
+
+autoaplicado$id <- as.factor(autoaplicado$id)
+empleadores$id <- as.factor(empleadores$id)
+sindtrab$id <- as.factor(sindtrab$id)
+
+autoaplicado <- autoaplicado %>% arrange(id)
+empleadores <- empleadores %>% arrange(id)
+sindtrab <- sindtrab %>% arrange(id)
+
+identical(autoaplicado$id, empleadores$id) 
+identical(autoaplicado$id, sindtrab$id)
+
+# Seleccionar variables ---------------------------------------------------
+
+proc <- bind_cols(sindtrab %>% dplyr::select(estrato, fe, id, sindicato,k4_01_sind,
+                                             starts_with("j8_"), m8_sind, m17_13, 
+                                             starts_with("k2_"), starts_with("k4_0")), 
+                  autoaplicado %>% dplyr::select(b1_1_7, b1_2_7, b1_3_7, k2,
+                                                 actividad_economica,
+                                                 starts_with("h4_"),
+                                                 h5,starts_with("h6_"),
+                                                 starts_with("k3_"),
+                                                 starts_with("h7_1"), starts_with("h7_2"),
+                                                 starts_with("o3_")), 
+                  empleadores %>% dplyr::select(starts_with("d3_"),
+                                                starts_with("f2_"),
+                                                starts_with("j9"))) 
+
+# Recodificar -----------------------------------------------------------------
+
+proc <- proc %>%  mutate(across(starts_with(c("m8_", "actividad")), as.character),
+                         across(all_of(c("k3_3", "k3_2", "k3_1")),
+                                ~ if_else(is.na(.), 0, .)),
+                         across(starts_with(c("j8_", "m8_", "m17_", "k4_0", "j9",
+                                              "d3_", "f2_","k4_","h4_1")), 
+                                ~ case_when(. %in% c(85, 88, 96, -96, 99) ~ NA, 
+                                            TRUE ~ .)),
+                         across(starts_with(c("k3_", "b1_", "h4_", "h7_", "o3_", "k2_")), 
+                                ~ case_when(. == -96 ~ NA, 
+                                            TRUE ~ .)),
+                         across(starts_with(c("j8_", "d3_", "h6_", "m17_", "h5", "j9")),
+                                ~case_when(.==1~1, 
+                                           .==2~0,
+                                           TRUE~NA),
+                                .names = "{.col}_rec"),
+                         across(starts_with(c("f2_")),
+                                ~case_when(.==1~1,
+                                           .==2~1,
+                                           .==3~0,
+                                           TRUE ~ NA),
+                                .names = "{.col}_rec"),
+                         across(c(k4_01_sind), 
+                                ~ case_when(
+                                  . == 1 ~ 1,  
+                                  . == 2 ~ 0,  
+                                  . == 3 ~ NA_real_, 
+                                  TRUE ~ .),  
+                                .names = "{.col}_dummy_m"),
+                         k2 = case_when (k2 == 0 ~ NA,
+                                         k2 == 1 ~ 0,
+                                         k2 == 2 ~ 1,
+                                         TRUE ~ NA),
+                         actividad_economica = factor(actividad_economica, 
+                                                      labels = c("Agricultura, ganadería, silvicultura y pesca",
+                                                                 "Minería",
+                                                                 "Industria manufacturera",
+                                                                 "Suministro de electricidad, gas y agua; Gestión de desechos",
+                                                                 "Construcción",
+                                                                 "Comercio",
+                                                                 "Transporte, almacenamiento, información y comunicaciones",
+                                                                 "Alojamiento y servicio de comidas",
+                                                                 "Actividades financieras y de seguros; Actividades inmobiliarias",
+                                                                 "Actividades profesionales y técnicas; Servicios administrativos y de apoyo",
+                                                                 "Enseñanza",
+                                                                 "Salud y asistencia social",
+                                                                 "Actividades artísticas y recreativas; Otros servicios"))) %>% 
+  
+  ### Indices e indicadores ---------------------------------------------------
+
+mutate(igualdad_genero = rowSums(select(., j8_01_rec,j8_02_rec,j8_03_rec,j8_04_rec,j8_05_rec,j8_06_rec,
+                               d3_01_rec,d3_02_rec,d3_03_rec,d3_04_rec,d3_05_rec,d3_06_rec,d3_07_rec), na.rm=TRUE)) %>% 
+  mutate(fwa = f2_01_rec + f2_02_rec + f2_03_rec + f2_04_rec + f2_77_rec) %>%
+  mutate(densidad_sindical = k3_3/(b1_3_7)) %>% 
+  mutate(dens_sind1 = k2_t_sind/(b1_3_7)) %>% 
+  mutate(feminizacion_fuerza_laboral = b1_1_7 / b1_3_7) %>% 
+  mutate(dens_sind_m = ifelse(is.na(k3_1) | is.na(b1_1_7), NA, k3_1 / b1_1_7)) %>% 
+  mutate(dens_sind_m1 = ifelse(is.na(k2_m_sind) | is.na(b1_1_7), NA, k2_m_sind / b1_1_7)) %>% 
+  mutate(feminizacion_densidad_sindical = case_when(b1_1_7 == 0 | b1_2_7 == 0 ~ 0,  
+                         TRUE ~ (k3_1 / b1_1_7) / (k3_2 / b1_2_7))) %>%
+  mutate(fds1 = case_when(b1_1_7 == 0 | b1_2_7 == 0 ~ 0,  
+                         TRUE ~ (k2_m_sind / b1_1_7) / (k2_h_sind / b1_2_7))) %>%
+  mutate(tamano_empresa = case_when(b1_3_7 <= 9 ~ 1,
+                                    b1_3_7 >= 10 & b1_3_7 <= 49 ~ 2,
+                                    b1_3_7 >= 50 & b1_3_7 <= 199 ~ 3,
+                                    b1_3_7 >= 200 ~ 4)) %>% 
+  mutate(across(starts_with(c("j8_", "tamano_em", "h4_", "h6_", "h7_1", "h7_2", 
+                              "o3_", "d3_", "m17_", "h5", "k2_")), as.factor))
+
+# Solucionar problemas ----------------------------------------------------
+
+proc$densidad_sindical[proc$densidad_sindical > 1.1] <- NA
+proc$dens_sind_m[proc$dens_sind_m > 1.1] <- NA
+proc$feminizacion_densidad_sindical[is.infinite(proc$feminizacion_densidad_sindical)] <- NA
+
+proc$dens_sind1[proc$dens_sind1 > 1.1] <- NA
+proc$dens_sind_m1[proc$dens_sind_m1 > 1.1] <- NA
+proc$fds1[is.infinite(proc$fds1)] <- NA
+
+
+# Renombrar variables -----------------------------------------------------
+
+proc <- proc %>% mutate(negociacion_conciliacion = m17_13_rec,
+                        acceso_salacuna = h5_rec,
+                        sindicato = j9_rec,
+                        mujer_presidenta_sindicato = k4_01_sind_dummy_m,
+                        pluralismo_sindical = k2)
+
+## Filtrar ----------------------------------------------------------------
+
+fildata <- proc %>%
+  filter(as.numeric(as.character(b1_1_7)) > 19 & as.numeric(as.character(h4_1)) != 0)
+
+# Exportar datos ----------------------------------------------------------
+
+saveRDS(proc, file = "output/proc.rds")
+saveRDS(fildata, file = "output/datosfiltrados.rds")
+#saveRDS(fildata2, file = "output/datosfiltrados2.rds")

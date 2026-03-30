@@ -1,0 +1,153 @@
+rm(list = ls())
+options(scipen=999)
+
+#Librerías
+
+library(pacman)
+pacman::p_load(tidyverse,readxl,sjPlot,sjmisc,car,dplyr,scales)
+
+# Abrir base de datos
+
+data <- readxl::read_excel("input/base_OHL.xlsx", col_types = "text")
+
+#Limpieza
+
+data90 <- data %>%
+  mutate(across(c(yr, inst, ciuur2), as.numeric)) %>%
+  filter(yr >= 1990) %>%
+  select(yr, inst, ciuur2, ohl_ramas) %>%
+  mutate(sector = case_when(
+      inst %in% c(1, 2, 8) ~ "privado",
+      inst %in% c(3, 41, 42, 43, 5, 6) ~ "publico",
+      TRUE ~ "?"),
+      rama = if_else(yr<= 2021, as.numeric(ciuur2), as.numeric(ohl_ramas)),
+    rama = car::recode(rama,
+      recodes = "
+        1=1; 2=1; 3=1; 4=1; 5=1;
+        6=2; 
+        7=3; 
+        8=4; 9=4;
+        10=5; 11=5;
+        12=6; 13=6;
+        14=7; 15=7; 16=7; 17=7; 18=7; 19=7; 20=7; 21=7; 22=7; 23=7;
+        33=33"))
+
+data90$rama <- factor(data90$rama, 
+                     levels = 1:7, 
+                     labels = c("Agricultura, ganadería, silvicultura y pesca",
+                                "Minería",
+                                "Industria manufacturera",
+                                "Construcción y suministro electricidad, gas y agua",
+                                "Comercio, hoteles y restaurantes",
+                                "Transporte y comunicaciones",
+                                "Servicios"))
+
+data10 <- data %>% filter(yr >= 2010) %>% 
+  select(yr,dem1) %>% 
+  mutate(demanda = car::recode(
+    dem1,
+    recodes = "1 = 1; 17 = 1; 18 = 1; 21 = 1;
+        5 = 2; 6 = 2; 8 = 2; 10 = 2;
+        3 = 3; 2 = 3; 4 = 3; 7 = 3;
+        9 = 3; 11 = 3; 12 = 3; 16 = 3; 19 = 3;
+        13 = 4; 14 = 4; 15 = 4;
+        20 = 5")) %>% 
+  mutate(demanda = factor(demanda,
+      levels = c(1, 2, 3, 4, 5),
+      labels = c("Demandas económicas / remuneraciones",
+                 "Condiciones de trabajo",
+                 "Organización del trabajo",
+                 "Demandas externas",
+                 "Otras causas")))
+  
+# Gráficos ----------------------------------------------------------------
+
+# Primer gráfico: Huelgas x sector desde 1990
+
+df_plot1 <- data90 %>%
+  filter(sector %in% c("publico", "privado")) %>%
+  count(yr, sector, name = "n")
+
+plot1 <- ggplot(df_plot1,
+                        aes(x = yr,
+                            y = n,
+                            fill = sector)) +
+  geom_col(width = 0.85) +
+  theme_bw() +
+  scale_fill_grey(start = 0.25, end = 0.75,
+                  breaks = c("publico", "privado"),
+                  labels = c("Público", "Privado"),
+                  name = "Sector") +
+  scale_x_continuous(
+    name = "",
+    breaks = sort(unique(df_plot1$yr))
+  ) +
+  scale_y_continuous(
+    name = "",
+    expand = expansion(mult = c(0, 0.05))
+  ) +
+  theme(
+    axis.text.x = element_text(
+      angle = 70,
+      hjust = 1,
+      vjust = 1))
+
+# Segundo gráfico: Huelgas por rama
+
+df_plot2 <- data90 %>%
+  count(yr, rama, name = "n")
+
+df_plot2 <- df_plot2 %>%
+  filter(
+    !is.na(yr),
+    !is.na(n),
+    !is.na(rama))
+
+plot2 <- ggplot(
+  df_plot2,
+  aes(
+    x = yr,
+    y = n,
+    group = rama,
+    colour = rama,
+    linetype = rama,
+    shape = rama
+  )) +
+  geom_line(linewidth = 0.6) +
+  geom_point(size = 2) +
+  theme_bw() +
+  scale_color_grey(
+    start = 0.2, end = 0.8,
+    name = "Rama"
+  ) +
+  scale_linetype_manual(
+    values = c("solid", "dashed", "dotted", "dotdash",
+               "longdash", "twodash", "solid"),
+    name = "Rama") +
+  scale_shape_manual(
+    values = c(16, 17, 15, 18, 19, 8, 7),
+    name = "Rama"
+  ) +
+  scale_x_continuous(
+    name = "",
+    breaks = sort(unique(df_plot2$yr))
+  ) +
+  scale_y_continuous(
+    name = "",
+    expand = expansion(mult = c(0, 0.05))
+  ) +
+  theme(
+    axis.text.x = element_text(
+      angle = 70,
+      hjust = 1,
+      vjust = 1
+    ),
+    legend.title = element_blank(),
+    legend.position = "bottom"
+  ) +
+  guides(
+    colour = guide_legend(override.aes = list(shape = c(16,17,15,18,19,8,7),
+                                              linetype = c("solid","dashed","dotted","dotdash",
+                                                           "longdash","twodash","solid"))))
+
+  

@@ -1,0 +1,5 @@
+"0",""
+"0","union_density_bysector <- encla %>%"
+"0","  group_by(economic_industry) %>%"
+"0","  summarise(union_density_sector = (sum(k3_3, na.rm = TRUE) / sum(b1_3_7, na.rm = TRUE))*100)"
+"0",""

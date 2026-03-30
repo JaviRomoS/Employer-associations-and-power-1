@@ -1,0 +1,69 @@
+rm(list=ls())
+options(scipen = 999)
+
+# --------------------------------ANÁLISIS --------------------------------
+# Analisis de RLM para y = Índice de igualdad de género
+# Cargar paquetes ---------------------------------------------------------
+
+library(pacman)
+pacman::p_load(tidyverse, haven, survey, writexl, tibble, broom, ggmosaic, texreg, sjPlot)
+
+# Abrir base de datos -----------------------------------------------------
+
+data <- readRDS("output/proc.rds")
+
+# Seleccionar variables ------------------------------------------------------------
+
+data <- data %>% dplyr::select(ig_gen, j9_rec, k2, dens_sind, fds, femin_fl, 
+                               b1_3_7, actividad_economica)
+
+# Borrar filas con NA -----------------------------------------------------
+
+data <- na.omit(data)
+
+# ESTIMACIONES ------------------------------------------------------------
+
+  ## 1. matriz de correlaciones ----------------------------------------------
+
+data <- data %>% mutate(across(c(ig_gen, j9_rec, k2, dens_sind, femin_fl, 
+                                 b1_3_7), 
+                ~ as.numeric(as.character(.))))
+summary(data)
+matriz_o1 <- cor(data[c("k2", "dens_sind","fds","femin_fl","b1_3_7")],
+                          use = 'complete.obs')
+
+round(matriz_o1, 2)
+rm(matriz_o1)
+
+  ## 2. Estimación modelos parciales -----------------------------------------
+
+#obtener_coef_estandarizados <-
+#  function(model) {
+#    coef <- model$coefficients[-1]
+#    sd_ <- sapply(model$model, sd)
+#    sd_ind <- sd_[-1]
+#    sd_dep <- sd_[1]
+#  coef_estandarizados <- coef * sd_ind / sd_dep
+#    return(coef_estandarizados)}
+
+#Modelo 1
+model1 <- lm(ig_gen ~ k2 + dens_sind, data = data)
+summary(model1)
+summary(model1)$r.squared
+length(model1$fitted.values)
+#obtener_coef_estandarizados(model1)
+
+#Modelo 2
+model2 <- lm(ig_gen ~ femin_fl + fds, data = data)
+summary(model2)
+summary(model2)$r.squared
+length(model2$fitted.values)
+#obtener_coef_estandarizados(model2)
+
+  ## 3. Estimación modelo completo ----------------------------------------------
+
+model3 <- lm(ig_gen ~ k2 + dens_sind + femin_fl + fds + b1_3_7 + actividad_economica, data = data)
+summary(model3)
+summary(model3)$r.squared
+length(model3$fitted.values)
+#obtener_coef_estandarizados(model3)

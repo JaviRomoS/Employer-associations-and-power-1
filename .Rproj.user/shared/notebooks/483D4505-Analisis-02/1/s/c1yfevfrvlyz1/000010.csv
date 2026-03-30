@@ -1,8 +1,0 @@
-"0","encla %>%
-  group_by(economic_industry) %>%
-  summarise(union_density_sector = (sum(k3_3, na.rm = TRUE) / sum(b1_3_7, na.rm = TRUE))*100) %>% View() %>% 
-  ungroup()
-"
-"2","Error en UseMethod(""ungroup""): 
-  no applicable method for 'ungroup' applied to an object of class ""NULL""
-"
